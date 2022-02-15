@@ -1,0 +1,27 @@
+---
+
+default_resources:
+  threads: 1
+  time: "12:00:00"
+  mem_mb: 1024
+  mem_per_cpu: 3072
+  partition: core
+
+fastp_pe:
+  threads: 2
+  time: "12:00:00"
+
+fastqc:
+  threads: 10
+  time: "02:00:00"
+
+fq2bam:
+  gres: ""
+  mem_mb: 0
+  mem_per_cpu: 0
+  partition: ""
+  threads: 0
+  time: ""
+
+
+#Försöka se hur Martin gjort i sin lina på Marvin.
