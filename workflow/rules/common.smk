@@ -17,7 +17,7 @@ min_version("6.10.0")
 
 ### Set and validate config file
 
-configfile: "config/config.yaml"
+configfile: "config.yaml"
 validate(config, schema="../schemas/config.schema.yaml")
 
 

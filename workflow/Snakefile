@@ -16,7 +16,7 @@ report: "report/workflow.rst"
 
 rule all:
     input:
-        ["prealignment/merged/%s_N_fastq1.fastq.gz" % sample for sample in get_samples(samples)],
+        ["parabricks/fq2bam/%s_N.bam" % sample for sample in get_samples(samples)],
 
 #        ["vcf_filter/%s.vcf.gz" % sample for sample in get_samples(samples)],
 # can change the function in common-smk to use : unpack(compile_output_list),
@@ -32,17 +32,29 @@ module prealignment:
 use rule * from prealignment as module_*
 
 
-# module parabricks:
-#     snakefile:
-#         github("hydra-genetics/parabricks", path="workflow/Snakefile", tag=config["modules"]["parabricks"],)
-#     config:
-#         config
-#
-#
-# use rule fq2bam from parabricks as parabricks_fqbam
-# use rule deepvariant from parabricks as parabricks_deepvariant
-#
-#
+module parabricks:
+    snakefile:
+        github("hydra-genetics/parabricks", path="workflow/Snakefile", tag=config["modules"]["parabricks"],)
+    config:
+        config
+
+
+use rule fq2bam from parabricks as parabricks_fq2bam
+
+use rule deepvariant from parabricks as parabricks_deepvariant
+
+
+module misc:
+    snakefile:
+        github("hydra-genetics/misc", path="workflow/Snakefile", tag=config["modules"]["misc"])
+    config:
+        config
+
+
+use rule * from misc as misc_*
+
+ruleorder: parabricks_fq2bam > misc_samtools_index
+
 # module qc:
 #     snakefile:
 #         github("hydra-genetics/qc", path="workflow/Snakefile", tag=config["modules"]["qc"],)
