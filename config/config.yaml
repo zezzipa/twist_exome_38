@@ -13,14 +13,14 @@ modules:
   cnv_sv: "master"
   parabricks: "develop"
   prealignment: "develop"
-  qc: "master"
+  qc: "develop"
   misc: "develop"
 
 reference:
   fasta: "/data/ref_genomes/GRCh38/reference_grasnatter/homo_sapiens.fasta"
   sites: "/data/ref_genomes/GRCh38/reference_grasnatter/homo_sapiens.known_indels.vcf.gz"
   1000Ginterval: "/projects/wp3/nobackup/Workspace/PEDDY/1000G.bed"
-  twist_intervals: "/projects/wp3/Reference_files/Manifest/Clinical_research_exome/TWIST/Twist_Comprehensive_Exome_Covered_Targets_hg38_interval_list.bed "
+  design_intervals: "/projects/wp3/Reference_files/Manifest/Clinical_research_exome/TWIST/Twist_Comprehensive_Exome_Covered_Targets_hg38_interval_list.bed"
   twist_bed: "/projects/wp3/Reference_files/Manifest/Clinical_research_exome/TWIST/Twist_Comprehensive_Exome_Covered_Targets_hg38.bed"
 
 trimmer_software: "fastp"
@@ -33,12 +33,17 @@ fastqc:
 
 multiqc:
   container: "docker://hydragenetics/multiqc:1.11"
+  config: "multiqc.config"
   qc_files:
-    - "qc/mosdepth/{sample}_{type}.mosdepth.global.dist.txt"
-    - "qc/mosdepth/{sample}_{type}.mosdepth.region.dist.txt"
-    - "qc/mosdepth/{sample}_{type}.mosdepth.summary.txt"
-    - "qc/mosdepth/{sample}_{type}.regions.bed.gz"
-    - "qc/mosdepth/{sample}_{type}.regions.bed.gz.csi"
+    - "prealignment/fastp_pe/{sample}_{run}_{lane}_{type}.json"
+    # - "qc/mosdepth/{sample}_{type}.mosdepth.global.dist.txt"
+    # - "qc/mosdepth/{sample}_{type}.mosdepth.region.dist.txt"
+    # - "qc/mosdepth/{sample}_{type}.mosdepth.summary.txt"
+    # - "qc/mosdepth/{sample}_{type}.regions.bed.gz"
+    # - "qc/mosdepth/{sample}_{type}.regions.bed.gz.csi"
+    - "qc/picard_collect_hs_metrics/{sample}_{type}.HsMetrics.txt"
+    - "qc/fastqc/{sample}_{type}_fastq1_fastqc.zip"
+    - "qc/fastqc/{sample}_{type}_fastq2_fastqc.zip"
     - "qc/picard_alignment_summary_metrics/{sample}_{type}.alignment_summary_metrics.txt"
     - "qc/picard_duplication_metrics/{sample}_{type}.duplication_metrics.txt"
     - "qc/picard_collect_gc_bias_metrics/{sample}_{type}.gc_bias.pdf"
@@ -53,7 +58,8 @@ multiqc:
     - "qc/picard_collect_multiple_metrics/{sample}_{type}.quality_by_cycle.pdf"
     - "qc/picard_collect_multiple_metrics/{sample}_{type}.quality_distribution_metrics"
     - "qc/picard_collect_multiple_metrics/{sample}_{type}.quality_distribution.pdf"
-    - "qc/picard_collect_wgs_metrics/{sample}_{type}.txt"
+    - "qc/picard_collect_insert_size_metrics/{sample}_{type}.insert_size_metrics.txt"
+    - "qc/picard_collect_insert_size_metrics/{sample}_{type}.insert_size_histogram.pdf"
     - "qc/samtools_stats/{sample}_{type}.samtools-stats.txt"
 
 mosdepth:

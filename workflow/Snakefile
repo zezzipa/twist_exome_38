@@ -16,7 +16,7 @@ report: "report/workflow.rst"
 
 rule all:
     input:
-        ["parabricks/fq2bam/%s_N.bam" % sample for sample in get_samples(samples)],
+        ["parabricks/deepvariant/%s.vcf" % sample for sample in get_samples(samples)],
 
 #        ["vcf_filter/%s.vcf.gz" % sample for sample in get_samples(samples)],
 # can change the function in common-smk to use : unpack(compile_output_list),
@@ -38,74 +38,59 @@ module parabricks:
     config:
         config
 
-
 use rule fq2bam from parabricks as parabricks_fq2bam
 
 use rule deepvariant from parabricks as parabricks_deepvariant
 
 
-module misc:
+module qc:
     snakefile:
-        github("hydra-genetics/misc", path="workflow/Snakefile", tag=config["modules"]["misc"])
+        github("hydra-genetics/qc", path="workflow/Snakefile", tag=config["modules"]["qc"],)
     config:
         config
 
-
-use rule * from misc as misc_*
-
-ruleorder: parabricks_fq2bam > misc_samtools_index
-
-# module qc:
-#     snakefile:
-#         github("hydra-genetics/qc", path="workflow/Snakefile", tag=config["modules"]["qc"],)
-#     config:
-#         config
-#
-#
-# use rule * from qc as qc_*
-#
 # use rule mosdepth from qc as qc_mosdepth with:
 #     input:
 #         bam="parabricks/fq2bam/{sample}_{type}.bam",
 #         bai="parabricks/fq2bam/{sample}_{type}.bam.bai",
-#
-#
-# use rule multiqc from qc as qc_multiqc with:
-#     output:
-#         html="qc/multiqc/MultiQC.html",
-#         directory=directory("qc/multiqc/MultiQC_data"),
-#
-#
-# use rule picard_alignment_summary_metrics from qc as qc_picard_alignment_summary_metrics with:
-#     input:
-#         bam="parabricks/fq2bam/{sample}_{type}.bam",
-#         ref=config["reference"]["fasta"],
-#
-#
-# use rule picard_duplication_metrics from qc as qc_picard_duplication_metrics with:
-#     input:
-#         bam="parabricks/fq2bam/{sample}_{type}.bam",
-#
-#
-# use rule picard_collect_gc_bias_metrics from qc as qc_picard_collect_gc_bias_metrics with:
-#     input:
-#         bam="parabricks/fq2bam/{sample}_{type}.bam",
-#         ref=config["reference"]["fasta"],
-#
-#
-# use rule picard_collect_multiple_metrics from qc as qc_picard_collect_multiple_metrics with:
-#     input:
-#         bam="parabricks/fq2bam/{sample}_{type}.bam",
-#         ref=config["reference"]["fasta"],
-#
-#
-# use rule picard_collect_wgs_metrics from qc as qc_picard_collect_wgs_metrics with:
-#     input:
-#         bam="parabricks/fq2bam/{sample}_{type}.bam",
-#         ref=config["reference"]["fasta"],
-#         interval=config["reference"]["twist_intervals"],
-#
-#
-# use rule samtools_stats from qc as qc_samtools_stats with:
-#     input:
-#         bam="parabricks/fq2bam/{sample}_{type}.bam",
+
+
+use rule multiqc from qc as qc_multiqc with:
+    output:
+        html="qc/multiqc/MultiQC.html",
+        directory=directory("qc/multiqc/MultiQC_data"),
+
+
+use rule picard_alignment_summary_metrics from qc as qc_picard_alignment_summary_metrics with:
+    input:
+        bam="parabricks/fq2bam/{sample}_{type}.bam",
+
+
+use rule picard_duplication_metrics from qc as qc_picard_duplication_metrics with:
+    input:
+        bam="parabricks/fq2bam/{sample}_{type}.bam",
+
+
+use rule picard_collect_gc_bias_metrics from qc as qc_picard_collect_gc_bias_metrics with:
+    input:
+        bam="parabricks/fq2bam/{sample}_{type}.bam",
+
+
+use rule picard_collect_hs_metrics from qc as qc_picard_collect_hs_metrics with:
+    input:
+        bam="parabricks/fq2bam/{sample}_{type}.bam",
+
+
+use rule picard_collect_insert_size_metrics from qc as qc_picard_collect_insert_size_metrics with:
+    input:
+        bam="parabricks/fq2bam/{sample}_{type}.bam",
+
+
+use rule picard_collect_multiple_metrics from qc as qc_picard_collect_multiple_metrics with:
+    input:
+        bam="parabricks/fq2bam/{sample}_{type}.bam",
+
+
+use rule samtools_stats from qc as qc_samtools_stats with:
+    input:
+        bam="parabricks/fq2bam/{sample}_{type}.bam",
