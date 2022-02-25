@@ -50,33 +50,59 @@ module qc:
     config:
         config
 
-use rule multiqc from qc as qc_multiqc
+use rule multiqc from qc as qc_multiqc with:
+    output:
+        "qc/multiqc/MultiQC.html",
+        directory("qc/multiqc/MultiQC_data"),
 
-use rule fastqc from qc as qc_fastqc
+use rule fastqc from qc as qc_fastqc with:
+    output:
+        html="qc/fastqc/{sample}_{type}_{read}_fastqc.html",
+        zip="qc/fastqc/{sample}_{type}_{read}_fastqc.zip",
+        tmp="qc/fastqc/{sample}_{type}_{read}/tmp.txt",
 
 use rule picard_collect_duplication_metrics from qc as qc_pic_dup_met with:
     input:
         bam="parabricks/fq2bam/{sample}_{type}.bam",
+    output:
+        metrics="qc/picard_collect_duplication_metrics/{sample}_{type}.duplication_metrics.txt",
 
 use rule picard_collect_insert_size_metrics from qc as qc_pic_ins_size with:
     input:
         bam="parabricks/fq2bam/{sample}_{type}.bam",
+    output:
+        txt="qc/picard_collect_insert_size_metrics/{sample}_{type}.insert_size_metrics.txt",
+        pdf="qc/picard_collect_insert_size_metrics/{sample}_{type}.insert_size_histogram.pdf",
 
 use rule picard_collect_gc_bias_metrics from qc as qc_pic_gc_met with:
     input:
         bam="parabricks/fq2bam/{sample}_{type}.bam",
+        ref=config["reference"]["fasta"],
+    output:
+        chart="qc/picard_collect_gc_bias_metrics/{sample}_{type}.gc_bias.pdf",
+        metrics="qc/picard_collect_gc_bias_metrics/{sample}_{type}.gc_bias.detail_metrics",
+        summary="qc/picard_collect_gc_bias_metrics/{sample}_{type}.gc_bias.summary_metrics",
 
 use rule picard_collect_multiple_metrics from qc as qc_pic_multi_met with:
     input:
         bam="parabricks/fq2bam/{sample}_{type}.bam",
+        ref=config["reference"]["fasta"],
 
 use rule picard_collect_alignment_summary_metrics from qc as qc_pic_align_sum_met with:
     input:
         bam="parabricks/fq2bam/{sample}_{type}.bam",
+        ref=config["reference"]["fasta"],
+    output:
+        metrics="qc/picard_collect_alignment_summary_metrics/{sample}_{type}.alignment_summary_metrics.txt",
 
 use rule picard_collect_hs_metrics from qc as qc_pic_hs_met with:
     input:
         bam="parabricks/fq2bam/{sample}_{type}.bam",
+        bait_intervals=config["reference"]["design_intervals"],
+        target_intervals=config["reference"]["design_intervals"],
+        reference=config["reference"]["fasta"],
+    output:
+        "qc/picard_collect_hs_metrics/{sample}_{type}.HsMetrics.txt",
 
 use rule samtools_stats from qc as qc_samtools_stats with:
     input:
