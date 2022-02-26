@@ -107,9 +107,11 @@ use rule picard_collect_hs_metrics from qc as qc_pic_hs_met with:
 use rule samtools_stats from qc as qc_samtools_stats with:
     input:
         bam="parabricks/fq2bam/{sample}_{type}.bam",
+    output:
+        "qc/samtools_stats/{sample}_{type}.samtools-stats.txt"
 
 use rule mosdepth from qc as qc_mosdepth with:
     input:
         bam="parabricks/fq2bam/{sample}_{type}.bam",
         bai="parabricks/fq2bam/{sample}_{type}.bam.bai",
-#        bed="test.bed",
+        bed=config["reference"]["design_bed"],
