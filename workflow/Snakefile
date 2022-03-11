@@ -10,13 +10,12 @@ include: "rules/common.smk"
 report: "report/workflow.rst"
 
 
-#include: "rules/fq2vcf.smk"
 #include: "rules/vcf_filter.smk"
 
 
 rule all:
     input:
-        ["parabricks/fq2bam/%s_N.vcf" % sample for sample in get_samples(samples)],
+        ["vcf_final/%s.vcf.gz" % sample for sample in get_samples(samples)],
         ["parabricks/deepvariant/%s.vcf" % sample for sample in get_samples(samples)],
         "qc/multiqc/MultiQC.html",
 
@@ -117,6 +116,13 @@ use rule samtools_stats from qc as qc_samtools_stats with:
         bam="parabricks/fq2bam/{sample}_{type}.bam",
     output:
         "qc/samtools_stats/{sample}_{type}.samtools-stats.txt"
+
+use rule samtools_idxstats from qc as qc_samtools_idxstats with:
+    input:
+        bam="parabricks/fq2bam/{sample}_{type}.bam",
+        bai="parabricks/fq2bam/{sample}_{type}.bam.bai",
+    output:
+        "qc/samtools_idxstats/{sample}_{type}.samtools-idxstats.txt"
 
 use rule mosdepth from qc as qc_mosdepth with:
     input:
