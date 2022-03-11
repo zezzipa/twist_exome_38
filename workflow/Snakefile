@@ -16,6 +16,7 @@ report: "report/workflow.rst"
 
 rule all:
     input:
+        ["parabricks/fq2bam/%s_N.vcf" % sample for sample in get_samples(samples)],
         ["parabricks/deepvariant/%s.vcf" % sample for sample in get_samples(samples)],
         "qc/multiqc/MultiQC.html",
 
@@ -39,7 +40,14 @@ module parabricks:
     config:
         config
 
-use rule fq2bam from parabricks as parabricks_fq2bam
+
+use rule fq2bam from parabricks as parabricks_fq2bam with:
+    output:
+        bam="parabricks/fq2bam/{sample}_{type}.bam",
+        bai="parabricks/fq2bam/{sample}_{type}.bam.bai",
+        metrics="parabricks/fq2bam/{sample}_{type}.metrics",
+        recal="parabricks/fq2bam/{sample}_{type}.txt",
+
 
 use rule deepvariant from parabricks as parabricks_deepvariant
 

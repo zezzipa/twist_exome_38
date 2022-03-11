@@ -4,7 +4,7 @@ resources: "resources.yaml"
 samples: "samples.tsv"
 units: "units.tsv"
 
-default_container: "docker://hydragenetics/common:0.0.1"
+default_container: "docker://hydragenetics/common:0.1.0"
 
 #programdir:
 #  dir: "/projects/wp3/nobackup/Workspace/WGS_pipeline_GPU_test/Poirot_RD-WGS-master/workflow"
@@ -12,7 +12,7 @@ default_container: "docker://hydragenetics/common:0.0.1"
 modules:
   cnv_sv: "master"
   parabricks: "develop"
-  prealignment: "develop"
+  prealignment: "v0.1.0"
   qc: "some_qc_add"
   misc: "develop"
 
@@ -100,10 +100,10 @@ picard_collect_multiple_metrics:
 #   container: "docker://hydragenetics/picard:2.25.0"
 
 samtools_stats:
-  container: "docker://hydragenetics/common:0.0.1"
+  container: "docker://hydragenetics/common:0.1.0"
 
 tabix:
-  container: "docker://hydragenetics/common:0.0.1"
+  container: "docker://hydragenetics/common:0.1.0"
 
 genepanels:
   - /projects/wp3/Reference_files/Manifest/Clinical_research_exome/Gene_panels/ALS.bed
