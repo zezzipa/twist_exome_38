@@ -100,7 +100,7 @@ picard_collect_multiple_metrics:
 # picard_collect_wgs_metrics:
 #   container: "docker://hydragenetics/picard:2.25.0"
 
-samtools_stats:
+samtools:
   container: "docker://hydragenetics/common:0.1.0"
 
 tabix:
