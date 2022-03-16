@@ -114,6 +114,7 @@ use rule picard_collect_hs_metrics from qc as qc_pic_hs_met with:
     output:
         "qc/picard_collect_hs_metrics/{sample}_{type}.HsMetrics.txt",
 
+
 use rule samtools_stats from qc as qc_samtools_stats with:
     input:
         bam="parabricks/fq2bam/{sample}_{type}.bam",
