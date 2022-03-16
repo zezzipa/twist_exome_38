@@ -61,6 +61,7 @@ multiqc:
     - "qc/picard_collect_gc_bias_metrics/{sample}_{type}.gc_bias.detail_metrics"
     - "qc/picard_collect_gc_bias_metrics/{sample}_{type}.gc_bias.summary_metrics"
     - "qc/samtools_stats/{sample}_{type}.samtools-stats.txt"
+    - "qc/samtools_idxstats/{sample}_{type}.samtools-idxstats.txt"
 #     - "prealignment/fastp_pe/{sample}_{run}_{lane}_{type}.json"
 
 mosdepth:

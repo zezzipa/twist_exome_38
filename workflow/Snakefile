@@ -51,6 +51,9 @@ use rule fq2bam from parabricks as parabricks_fq2bam with:
 use rule deepvariant from parabricks as parabricks_deepvariant
 
 
+include: "rules/add_ref_to_vcf.smk"
+
+
 module qc:
     snakefile:
         github("hydra-genetics/qc", path="workflow/Snakefile", tag=config["modules"]["qc"],)
