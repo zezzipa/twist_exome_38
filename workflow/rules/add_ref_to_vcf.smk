@@ -8,7 +8,7 @@ rule addRef:
     log:
         "vcf_final/{sample}_add_ref.log",
     params:
-        config["programdir"]["dir"],
+        config.get("programdir", {}).get("dir", ""),
     conda:
         "../envs/parabricks.yaml"
     shell:

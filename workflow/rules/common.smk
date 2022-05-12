@@ -42,13 +42,31 @@ wildcard_constraints:
     read="fastq[1|2]",
 
 
-if config.get("trimmer_software", None) == "fastp_pe":
-    merged_input = lambda wildcards: expand(
-        "prealignment/fastp_pe/{{sample}}_{flowcell_lane}_{{type}}_{{read}}.fastq.gz",
-        flowcell_lane=["{}_{}".format(unit.flowcell, unit.lane) for unit in get_units(units, wildcards, wildcards.type)],
+### Functions ###
+def get_in_fastq(units, wildcards):
+    return expand(
+        "prealignment/merged/{{sample}}_{{type}}_{read}.fastq.gz",
+        read=["fastq1", "fastq2"],
     )
-else:
-    merged_input = lambda wildcards: get_fastq_files(units, wildcards)
+
+
+def get_in_fq(wildcards):
+    input_list = []
+    for unit in get_units(units, wildcards, wildcards.type):
+        prefix = "prealignment/merged/{}_{}".format(unit.sample, unit.type)
+        input_unit = "{}_fastq1.fastq.gz {}_fastq2.fastq.gz {}".format(
+            prefix,
+            prefix,
+            "'@RG\\tID:{}\\tSM:{}\\tPL:{}\\tPU:{}\\tLB:{}'".format(
+                "{}_{}.{}.{}".format(unit.sample, unit.type, unit.lane, unit.barcode),
+                "{}_{}".format(unit.sample, unit.type),
+                unit.platform,
+                "{}.{}.{}".format(unit.flowcell, unit.lane, unit.barcode),
+                "{}_{}".format(unit.sample, unit.type),
+            ),
+        )
+        input_list.append(input_unit)
+    return " --in-fq ".join(input_list)
 
 
 def compile_output_list(wildcards: snakemake.io.Wildcards):

@@ -18,9 +18,56 @@ rule all:
         ["vcf_final/%s.vcf.gz" % sample for sample in get_samples(samples)],
         ["parabricks/deepvariant/%s.vcf" % sample for sample in get_samples(samples)],
         "qc/multiqc/MultiQC.html",
+        ["compression/crumble/%s.crumble.cram" % sample for sample in get_samples(samples)],
+        ["conifer/RPKM/%s.rpkm" % sample for sample in get_samples(samples)],
+#        ["compression/spring/%s_N.spring" % sample for sample in get_samples(samples)],
+#        ["compression/spring/%s_N.spring" % sample for sample in get_samples(samples)],
 
 #        ["vcf_filter/%s.vcf.gz" % sample for sample in get_samples(samples)],
 # can change the function in common-smk to use : unpack(compile_output_list),
+
+module compression:
+    snakefile:
+        github("hydra-genetics/compression", path="workflow/Snakefile", tag=config["modules"]["compression"],)
+    config:
+        config
+
+use rule crumble from compression as compression_crumble with:
+    input:
+        cram="compression/samtools_view/{sample}.cram",
+    output:
+        crum="compression/crumble/{sample}.crumble.cram",
+    log:
+        "compression/crumble/{sample}.crumble.cram.log",
+    benchmark:
+        repeat("compression/crumble/{sample}.crumble.cram.benchmark.tsv",
+            config.get("crumble", {}).get("benchmark_repeats", 1),)
+
+use rule samtools_view from compression as compression_samtools_view with:
+    input:
+        bam="parabricks/fq2bam/{sample}_N.bam",
+        bai="parabricks/fq2bam/{sample}_N.bam.bai",
+        ref=config.get("reference", {}).get("fasta", ""),
+    output:
+        cram="compression/samtools_view/{sample}.cram",
+    log:
+        "compression/samtools_view/{sample}.cram.log",
+    benchmark:
+        repeat("compression/samtools_view/{sample}.cram.benchmark.tsv",
+            config.get("samtools_view", {}).get("benchmark_repeats", 1),)
+
+use rule spring from compression as compression_spring with:
+    input:
+        fastq=lambda wildcards: get_in_fastq(units, wildcards),
+    output:
+        spring=temp("compression/spring/{sample}_{type}.spring"),
+    log:
+        "compression/spring/{sample}_{type}.spring.log",
+    benchmark:
+        repeat(
+            "compression/spring/{sample}_{type}.spring.benchmark.tsv",
+            config.get("spring", {}).get("benchmark_repeats", 1),
+        )
 
 
 module prealignment:
@@ -52,6 +99,10 @@ use rule deepvariant from parabricks as parabricks_deepvariant
 
 
 include: "rules/add_ref_to_vcf.smk"
+
+include: "rules/conifer.smk"
+
+include: "rules/peddy.smk"
 
 
 module qc:

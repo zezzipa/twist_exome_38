@@ -6,10 +6,11 @@ units: "units.tsv"
 
 default_container: "docker://hydragenetics/common:0.1.0"
 
-#programdir:
-#  dir: "/projects/wp3/nobackup/Workspace/WGS_pipeline_GPU_test/Poirot_RD-WGS-master/workflow"
+programdir:
+  dir: "/projects/wp3/nobackup/Workspace/Jessika_playground/twist_exome_38-main/workflow"
 
 modules:
+  compression: "develop"
   cnv_sv: "master"
   parabricks: "develop"
   prealignment: "v0.1.0"
@@ -17,6 +18,7 @@ modules:
   misc: "develop"
 
 reference:
+  conifer: "/projects/wp3/nobackup/Workspace/CoNIFER/Twist_Exome_Target_hg38_woY.bed"
   fasta: "/data/ref_genomes/GRCh38/reference_grasnatter/homo_sapiens.fasta"
   genome_dir: "/data/ref_genomes/GRCh38/reference_grasnatter/"
   sites: "/data/ref_genomes/GRCh38/reference_grasnatter/homo_sapiens.known_indels.vcf.gz"
@@ -25,6 +27,13 @@ reference:
   design_bed: "/projects/wp3/Reference_files/Manifest/Clinical_research_exome/TWIST/Twist_Comprehensive_Exome_Covered_Targets_hg38.bed"
 
 trimmer_software: "fastp_pe"
+
+conifer:
+  container: "docker://hydragenetics/conifer:0.2.2"
+
+crumble:
+  container: "docker://hydragenetics/crumble:0.8.3"
+  extra: "-O CRAM"
 
 fastp_pe:
   container: "docker://hydragenetics/fastp:0.20.1"
@@ -102,6 +111,9 @@ picard_collect_multiple_metrics:
 
 samtools:
   container: "docker://hydragenetics/common:0.1.0"
+
+spring:
+  container: "docker://hydragenetics/spring:1.0.1"
 
 tabix:
   container: "docker://hydragenetics/common:0.1.0"
