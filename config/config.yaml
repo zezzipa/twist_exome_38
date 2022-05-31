@@ -14,7 +14,7 @@ modules:
   cnv_sv: "master"
   parabricks: "v0.2.0"
   prealignment: "v0.3.1"
-  qc: "develop"
+  qc: "add_samtools_idxstats"
   misc: "v0.1.0"
 
 reference:
@@ -48,18 +48,25 @@ mosdepth_bed:
 
 multiqc:
   container: "docker://hydragenetics/multiqc:1.11"
-  config: "multiqc.config"
   reports:
     DNA:
+      config: "multiqc.config"
       included_unit_types: ['N']
       qc_files:
+        - "qc/fastqc/{sample}_{type}_{flowcell}_{lane}_{barcode}_{read}_fastqc.zip"
+        - "qc/mosdepth_bed/{sample}_{type}.per-base.bed.gz"
+        - "qc/mosdepth_bed/{sample}_{type}.mosdepth.global.dist.txt"
+        - "qc/mosdepth_bed/{sample}_{type}.mosdepth.region.dist.txt"
+        - "qc/mosdepth_bed/{sample}_{type}.mosdepth.summary.txt"
+        - "qc/mosdepth_bed/{sample}_{type}.regions.bed.gz"
+        - "qc/mosdepth_bed/{sample}_{type}.regions.bed.gz.csi"
         - "qc/picard_collect_alignment_summary_metrics/{sample}_{type}.alignment_summary_metrics.txt"
         - "qc/picard_collect_duplication_metrics/{sample}_{type}.duplication_metrics.txt"
-        - "qc/picard_collect_gc_bias_metrics/{sample}_{type}.gc_bias.summary_metrics"
         - "qc/picard_collect_gc_bias_metrics/{sample}_{type}.gc_bias.pdf"
+        - "qc/picard_collect_gc_bias_metrics/{sample}_{type}.gc_bias.detail_metrics"
+        - "qc/picard_collect_gc_bias_metrics/{sample}_{type}.gc_bias.summary_metrics"
         - "qc/picard_collect_hs_metrics/{sample}_{type}.HsMetrics.txt"
         - "qc/picard_collect_insert_size_metrics/{sample}_{type}.insert_size_metrics.txt"
-        - "qc/picard_collect_insert_size_metrics/{sample}_{type}.insert_size_histogram.pdf"
         - "qc/picard_collect_multiple_metrics/{sample}_{type}.alignment_summary_metrics"
         - "qc/picard_collect_multiple_metrics/{sample}_{type}.base_distribution_by_cycle_metrics"
         - "qc/picard_collect_multiple_metrics/{sample}_{type}.base_distribution_by_cycle.pdf"
@@ -69,11 +76,9 @@ multiqc:
         - "qc/picard_collect_multiple_metrics/{sample}_{type}.quality_by_cycle.pdf"
         - "qc/picard_collect_multiple_metrics/{sample}_{type}.quality_distribution_metrics"
         - "qc/picard_collect_multiple_metrics/{sample}_{type}.quality_distribution.pdf"
-        - "qc/mosdepth_bed/{sample}_{type}.per-base.bed.gz"
-        - "qc/mosdepth_bed/{sample}_{type}.mosdepth.summary.txt"
         - "qc/samtools_stats/{sample}_{type}.samtools-stats.txt"
-#        - "qc/samtools_idxstats/{sample}_{type}.samtools-idxstats.txt"
-#        - "qc/fastqc/{sample}_{type}_{flowcell}_{lane}_{barcode}_{read}_fastqc.zip"
+        - "qc/samtools_idxstats/{sample}_{type}.samtools-idxstats.txt"
+
 #        - "prealignment/fastp_pe/{sample}_{run}_{lane}_{type}.json"
 
 picard_collect_alignment_summary_metrics:
@@ -99,16 +104,16 @@ picard_collect_insert_size_metrics:
 picard_collect_multiple_metrics:
  container: "docker://hydragenetics/picard:2.25.0"
  threads: 6
- output_ext:
-  - "alignment_summary_metrics"
-  - "base_distribution_by_cycle_metrics"
-  - "base_distribution_by_cycle.pdf"
-  - "insert_size_metrics"
-  - "insert_size_histogram.pdf"
-  - "quality_by_cycle_metrics"
-  - "quality_by_cycle.pdf"
-  - "quality_distribution_metrics"
-  - "quality_distribution.pdf"
+ # output_ext:
+ #  - "alignment_summary_metrics"
+ #  - "base_distribution_by_cycle_metrics"
+ #  - "base_distribution_by_cycle.pdf"
+ #  - "insert_size_metrics"
+ #  - "insert_size_histogram.pdf"
+ #  - "quality_by_cycle_metrics"
+ #  - "quality_by_cycle.pdf"
+ #  - "quality_distribution_metrics"
+ #  - "quality_distribution.pdf"
 
 # picard_collect_wgs_metrics:
 #   container: "docker://hydragenetics/picard:2.25.0"

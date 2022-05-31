@@ -63,9 +63,7 @@ module parabricks:
     config:
         config
 
-use rule pbrun_deepvariant from parabricks as parabricks_deepvariant
-
-use rule pbrun_fq2bam from parabricks as parabricks_fq2bam
+use rule * from parabricks as parabricks_*
 
 
 include: "rules/add_ref_to_vcf.smk"
@@ -81,7 +79,7 @@ module qc:
     config:
         config
 
-use rule * from qc as qc_*
+use rule fastqc from qc as qc_fastqc
 
 use rule mosdepth_bed from qc as qc_mosdepth_bed with:
     input:
@@ -128,10 +126,10 @@ use rule samtools_stats from qc as qc_samtools_stats with:
     input:
         bam="parabricks/pbrun_fq2bam/{sample}_{type}.bam",
 
-# use rule samtools_idxstats from qc as qc_samtools_idxstats with:
-#     input:
-#         bam="parabricks/pbrun_fq2bam/{sample}_{type}.bam",
-#         bai="parabricks/pbrun_fq2bam/{sample}_{type}.bam.bai",
+use rule samtools_idxstats from qc as qc_samtools_idxstats with:
+    input:
+        bam="parabricks/pbrun_fq2bam/{sample}_{type}.bam",
+        bai="parabricks/pbrun_fq2bam/{sample}_{type}.bam.bai",
 
 module misc:
     snakefile:
