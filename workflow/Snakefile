@@ -16,14 +16,13 @@ report: "report/workflow.rst"
 rule all:
     input:
         ["vcf_final/%s.vcf.gz" % sample for sample in get_samples(samples)],
-        ["parabricks/deepvariant/%s.vcf" % sample for sample in get_samples(samples)],
-        "qc/multiqc/MultiQC.html",
-        ["compression/crumble/%s.crumble.cram" % sample for sample in get_samples(samples)],
-        ["conifer/RPKM/%s.rpkm" % sample for sample in get_samples(samples)],
-#        ["compression/spring/%s_N.spring" % sample for sample in get_samples(samples)],
-#        ["compression/spring/%s_N.spring" % sample for sample in get_samples(samples)],
+        "qc/multiqc/multiqc_DNA.html",
 
-#        ["vcf_filter/%s.vcf.gz" % sample for sample in get_samples(samples)],
+#    unpack(compile_output_list),
+#        ["compression/crumble/%s.crumble.cram" % sample for sample in get_samples(samples)],
+#        ["conifer/RPKM/%s.rpkm" % sample for sample in get_samples(samples)],
+#        ["compression/spring/%s_N.spring" % sample for sample in get_samples(samples)],
+#        ["compression/spring/%s_N.spring" % sample for sample in get_samples(samples)],
 # can change the function in common-smk to use : unpack(compile_output_list),
 
 module compression:
@@ -32,42 +31,21 @@ module compression:
     config:
         config
 
+use rule * from compression as compression_*
+
 use rule crumble from compression as compression_crumble with:
-    input:
-        cram="compression/samtools_view/{sample}.cram",
     output:
-        crum="compression/crumble/{sample}.crumble.cram",
-    log:
-        "compression/crumble/{sample}.crumble.cram.log",
-    benchmark:
-        repeat("compression/crumble/{sample}.crumble.cram.benchmark.tsv",
-            config.get("crumble", {}).get("benchmark_repeats", 1),)
+        crum="compression/crumble/{file}.crumble.cram",
 
 use rule samtools_view from compression as compression_samtools_view with:
     input:
-        bam="parabricks/fq2bam/{sample}_N.bam",
-        bai="parabricks/fq2bam/{sample}_N.bam.bai",
+        bam="parabricks/pbrun_fq2bam/{file}.bam",
+        bai="parabricks/pbrun_fq2bam/{file}.bam.bai",
         ref=config.get("reference", {}).get("fasta", ""),
-    output:
-        cram="compression/samtools_view/{sample}.cram",
-    log:
-        "compression/samtools_view/{sample}.cram.log",
-    benchmark:
-        repeat("compression/samtools_view/{sample}.cram.benchmark.tsv",
-            config.get("samtools_view", {}).get("benchmark_repeats", 1),)
 
 use rule spring from compression as compression_spring with:
-    input:
-        fastq=lambda wildcards: get_in_fastq(units, wildcards),
     output:
-        spring=temp("compression/spring/{sample}_{type}.spring"),
-    log:
-        "compression/spring/{sample}_{type}.spring.log",
-    benchmark:
-        repeat(
-            "compression/spring/{sample}_{type}.spring.benchmark.tsv",
-            config.get("spring", {}).get("benchmark_repeats", 1),
-        )
+        spring="compression/spring/{sample}_{flowcell}_{lane}_{barcode}_{type}.spring",
 
 
 module prealignment:
@@ -75,7 +53,6 @@ module prealignment:
         github("hydra-genetics/prealignment", path="workflow/Snakefile", tag=config["modules"]["prealignment"],)
     config:
         config
-
 
 use rule * from prealignment as module_*
 
@@ -86,16 +63,9 @@ module parabricks:
     config:
         config
 
+use rule pbrun_deepvariant from parabricks as parabricks_deepvariant
 
-use rule fq2bam from parabricks as parabricks_fq2bam with:
-    output:
-        bam="parabricks/fq2bam/{sample}_{type}.bam",
-        bai="parabricks/fq2bam/{sample}_{type}.bam.bai",
-        metrics="parabricks/fq2bam/{sample}_{type}.metrics",
-        recal="parabricks/fq2bam/{sample}_{type}.txt",
-
-
-use rule deepvariant from parabricks as parabricks_deepvariant
+use rule pbrun_fq2bam from parabricks as parabricks_fq2bam
 
 
 include: "rules/add_ref_to_vcf.smk"
@@ -111,76 +81,77 @@ module qc:
     config:
         config
 
+use rule * from qc as qc_*
+
+use rule mosdepth_bed from qc as qc_mosdepth_bed with:
+    input:
+        bam="parabricks/pbrun_fq2bam/{sample}_{type}.bam",
+        bai="parabricks/pbrun_fq2bam/{sample}_{type}.bam.bai",
+        bed=config["reference"]["design_bed"],
+
 use rule multiqc from qc as qc_multiqc with:
     output:
-        "qc/multiqc/MultiQC.html",
-        directory("qc/multiqc/MultiQC_data"),
-
-use rule fastqc from qc as qc_fastqc with:
-    output:
-        html="qc/fastqc/{sample}_{type}_{read}_fastqc.html",
-        zip="qc/fastqc/{sample}_{type}_{read}_fastqc.zip",
-        tmp="qc/fastqc/{sample}_{type}_{read}/tmp.txt",
-
-use rule picard_collect_duplication_metrics from qc as qc_pic_dup_met with:
-    input:
-        bam="parabricks/fq2bam/{sample}_{type}.bam",
-    output:
-        metrics="qc/picard_collect_duplication_metrics/{sample}_{type}.duplication_metrics.txt",
-
-use rule picard_collect_insert_size_metrics from qc as qc_pic_ins_size with:
-    input:
-        bam="parabricks/fq2bam/{sample}_{type}.bam",
-    output:
-        txt="qc/picard_collect_insert_size_metrics/{sample}_{type}.insert_size_metrics.txt",
-        pdf="qc/picard_collect_insert_size_metrics/{sample}_{type}.insert_size_histogram.pdf",
-
-use rule picard_collect_gc_bias_metrics from qc as qc_pic_gc_met with:
-    input:
-        bam="parabricks/fq2bam/{sample}_{type}.bam",
-        ref=config["reference"]["fasta"],
-    output:
-        chart="qc/picard_collect_gc_bias_metrics/{sample}_{type}.gc_bias.pdf",
-        metrics="qc/picard_collect_gc_bias_metrics/{sample}_{type}.gc_bias.detail_metrics",
-        summary="qc/picard_collect_gc_bias_metrics/{sample}_{type}.gc_bias.summary_metrics",
-
-use rule picard_collect_multiple_metrics from qc as qc_pic_multi_met with:
-    input:
-        bam="parabricks/fq2bam/{sample}_{type}.bam",
-        ref=config["reference"]["fasta"],
+        html="qc/multiqc/multiqc_{report}.html",
+        directory=directory("qc/multiqc/multiqc_{report}_data"),
 
 use rule picard_collect_alignment_summary_metrics from qc as qc_pic_align_sum_met with:
     input:
-        bam="parabricks/fq2bam/{sample}_{type}.bam",
+        bam="parabricks/pbrun_fq2bam/{sample}_{type}.bam",
         ref=config["reference"]["fasta"],
-    output:
-        metrics="qc/picard_collect_alignment_summary_metrics/{sample}_{type}.alignment_summary_metrics.txt",
+
+use rule picard_collect_duplication_metrics from qc as qc_pic_dup_met with:
+    input:
+        bam="parabricks/pbrun_fq2bam/{sample}_{type}.bam",
+
+use rule picard_collect_gc_bias_metrics from qc as qc_pic_gc_met with:
+    input:
+        bam="parabricks/pbrun_fq2bam/{sample}_{type}.bam",
+        ref=config["reference"]["fasta"],
 
 use rule picard_collect_hs_metrics from qc as qc_pic_hs_met with:
     input:
-        bam="parabricks/fq2bam/{sample}_{type}.bam",
+        bam="parabricks/pbrun_fq2bam/{sample}_{type}.bam",
         bait_intervals=config["reference"]["design_intervals"],
         target_intervals=config["reference"]["design_intervals"],
         reference=config["reference"]["fasta"],
-    output:
-        "qc/picard_collect_hs_metrics/{sample}_{type}.HsMetrics.txt",
 
+use rule picard_collect_insert_size_metrics from qc as qc_pic_ins_size with:
+    input:
+        bam="parabricks/pbrun_fq2bam/{sample}_{type}.bam",
+
+use rule picard_collect_multiple_metrics from qc as qc_pic_multi_met with:
+    input:
+        bam="parabricks/pbrun_fq2bam/{sample}_{type}.bam",
+        ref=config["reference"]["fasta"],
 
 use rule samtools_stats from qc as qc_samtools_stats with:
     input:
-        bam="parabricks/fq2bam/{sample}_{type}.bam",
-    output:
-        "qc/samtools_stats/{sample}_{type}.samtools-stats.txt"
+        bam="parabricks/pbrun_fq2bam/{sample}_{type}.bam",
 
-use rule samtools_idxstats from qc as qc_samtools_idxstats with:
-    input:
-        bam="parabricks/fq2bam/{sample}_{type}.bam",
-        bai="parabricks/fq2bam/{sample}_{type}.bam.bai",
-    output:
-        "qc/samtools_idxstats/{sample}_{type}.samtools-idxstats.txt"
+# use rule samtools_idxstats from qc as qc_samtools_idxstats with:
+#     input:
+#         bam="parabricks/pbrun_fq2bam/{sample}_{type}.bam",
+#         bai="parabricks/pbrun_fq2bam/{sample}_{type}.bam.bai",
 
-use rule mosdepth from qc as qc_mosdepth with:
+module misc:
+    snakefile:
+        github("hydra-genetics/misc", path="workflow/Snakefile", tag=config["modules"]["misc"])
+    config:
+        config
+
+use rule samtools_index from misc as misc_samtools_index with:
     input:
-        bam="parabricks/fq2bam/{sample}_{type}.bam",
-        bai="parabricks/fq2bam/{sample}_{type}.bam.bai",
-        bed=config["reference"]["design_bed"],
+        cram="{file}.crumble.cram",
+    output:
+        crai="{file}.crumble.cram.crai",
+    params:
+        extra=config.get("extra", {}).get("extra", ""),
+    log:
+        "{file}.crumble.cram.crai.log",
+    benchmark:
+        repeat(
+            "{file}.crumble.cram.crai.benchmark.tsv",
+            config.get("samtools_index", {}).get("benchmark_repeats", 1),
+        )
+    message:
+        "{rule}: Index {wildcards.file}.crumble.cram file"
