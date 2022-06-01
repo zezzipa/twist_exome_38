@@ -61,7 +61,7 @@ multiqc:
         - "qc/mosdepth_bed/{sample}_{type}.regions.bed.gz"
         - "qc/mosdepth_bed/{sample}_{type}.regions.bed.gz.csi"
         - "qc/picard_collect_alignment_summary_metrics/{sample}_{type}.alignment_summary_metrics.txt"
-        - "qc/picard_collect_duplication_metrics/{sample}_{type}.duplication_metrics.txt"
+        - "qc/picard_collect_duplication_metrics/{sample}_{type}.txt"
         - "qc/picard_collect_gc_bias_metrics/{sample}_{type}.gc_bias.pdf"
         - "qc/picard_collect_gc_bias_metrics/{sample}_{type}.gc_bias.detail_metrics"
         - "qc/picard_collect_gc_bias_metrics/{sample}_{type}.gc_bias.summary_metrics"

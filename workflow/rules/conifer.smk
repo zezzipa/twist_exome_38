@@ -4,6 +4,12 @@ rule conifer_mapq20:
         bai="parabricks/pbrun_fq2bam/{sample}_N.bam.bai",
     output:
         temp("conifer/MAPQ20/{sample}.MAPQ20.bam"),
+    resources:
+        mem_mb=config.get("conifer", {}).get("mem_mb", config["default_resources"]["mem_mb"]),
+        mem_per_cpu=config.get("conifer", {}).get("mem_per_cpu", config["default_resources"]["mem_per_cpu"]),
+        partition=config.get("conifer", {}).get("partition", config["default_resources"]["partition"]),
+        threads=config.get("conifer", {}).get("threads", config["default_resources"]["threads"]),
+        time=config.get("conifer", {}).get("time", config["default_resources"]["time"]),
     container:
         config.get(config["default_container"]),
     shell:
@@ -14,6 +20,12 @@ rule conifer_mapq20_index:
         "conifer/MAPQ20/{sample}.MAPQ20.bam",
     output:
         temp("conifer/MAPQ20/{sample}.MAPQ20.bam.bai"),
+    resources:
+        mem_mb=config.get("conifer", {}).get("mem_mb", config["default_resources"]["mem_mb"]),
+        mem_per_cpu=config.get("conifer", {}).get("mem_per_cpu", config["default_resources"]["mem_per_cpu"]),
+        partition=config.get("conifer", {}).get("partition", config["default_resources"]["partition"]),
+        threads=config.get("conifer", {}).get("threads", config["default_resources"]["threads"]),
+        time=config.get("conifer", {}).get("time", config["default_resources"]["time"]),
     container:
         config.get(config["default_container"]),
     shell:
@@ -26,7 +38,7 @@ rule conifer_rpkm:
         bai="conifer/MAPQ20/{sample}.MAPQ20.bam.bai",
         ref=config["reference"]["conifer"],
     output:
-        RPKM="conifer/{sample}.rpkm",
+        RPKM="conifer/RPKM/{sample}.rpkm",
     log:
         "conifer/{sample}.rpkm.log",
     benchmark:
@@ -36,7 +48,7 @@ rule conifer_rpkm:
         )
     threads: config.get("conifer", {}).get("threads", config["default_resources"]["threads"]),
     params:
-        dir="/projects/wp3/nobackup/Workspace/CoNIFER",
+        dir="/beegfs-storage/projects/wp3/nobackup/Workspace/CoNIFER",
     resources:
         mem_mb=config.get("conifer", {}).get("mem_mb", config["default_resources"]["mem_mb"]),
         mem_per_cpu=config.get("conifer", {}).get("mem_per_cpu", config["default_resources"]["mem_per_cpu"]),
@@ -71,7 +83,7 @@ rule conifer_analyze:
         )
     threads: config.get("conifer", {}).get("threads", config["default_resources"]["threads"]),
     params:
-        dir="/projects/wp3/nobackup/Workspace/CoNIFER",
+        dir="/beegfs-storage/projects/wp3/nobackup/Workspace/CoNIFER",
     resources:
         mem_mb=config.get("conifer", {}).get("mem_mb", config["default_resources"]["mem_mb"]),
         mem_per_cpu=config.get("conifer", {}).get("mem_per_cpu", config["default_resources"]["mem_per_cpu"]),
@@ -112,7 +124,7 @@ rule conifer_call:
         )
     threads: config.get("conifer", {}).get("threads", config["default_resources"]["threads"]),
     params:
-        dir="/projects/wp3/nobackup/Workspace/CoNIFER",
+        dir="/beegfs-storage/projects/wp3/nobackup/Workspace/CoNIFER",
     resources:
         mem_mb=config.get("conifer", {}).get("mem_mb", config["default_resources"]["mem_mb"]),
         mem_per_cpu=config.get("conifer", {}).get("mem_per_cpu", config["default_resources"]["mem_per_cpu"]),

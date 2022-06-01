@@ -44,3 +44,34 @@ wildcard_constraints:
     sample="|".join(get_samples(samples)),
     type="N|T|R",
     read="fastq[1|2]",
+
+
+### Functions
+
+def compile_output_list(wildcards: snakemake.io.Wildcards):
+    output_list = ["qc/multiqc/multiqc_DNA.html"]
+    output_list.append([
+        "vcf_final/%s.vcf.gz" % sample
+        for sample in get_samples(samples)
+    ])
+    output_list.append("conifer/calls/calls_svd6.txt")
+    output_list.append([
+        "prealignment/merged/{}_{}_{}.fastq.gz".format(sample, t, read)
+        for sample in get_samples(samples)
+        for t in get_unit_types(units, sample)
+        for read in ["fastq1", "fastq2"]
+    ])
+    output_list.append([
+            "compression/crumble/%s_N.crumble.cram" % sample
+            for sample in get_samples(samples)
+    ])
+    return output_list
+
+    # output_list.append([
+    #     "compression/spring/%s_%s_%s_%s_%s.spring" % (sample, flowcell, lane, barcode, t)
+    #     for sample in set(units["sample"])
+    #     for flowcell in set(units["flowcell"])
+    #     for lane in set(units["lane"])
+    #     for barcode in set(units["barcode"])
+    #     for t in set(units["type"])
+    # ])

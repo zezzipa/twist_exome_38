@@ -15,14 +15,7 @@ report: "report/workflow.rst"
 
 rule all:
     input:
-        ["vcf_final/%s.vcf.gz" % sample for sample in get_samples(samples)],
-        "qc/multiqc/multiqc_DNA.html",
-
-#    unpack(compile_output_list),
-#        ["compression/crumble/%s.crumble.cram" % sample for sample in get_samples(samples)],
-#        ["conifer/RPKM/%s.rpkm" % sample for sample in get_samples(samples)],
-#        ["compression/spring/%s_N.spring" % sample for sample in get_samples(samples)],
-#        ["compression/spring/%s_N.spring" % sample for sample in get_samples(samples)],
+        unpack(compile_output_list),
 # can change the function in common-smk to use : unpack(compile_output_list),
 
 module compression:
@@ -33,9 +26,7 @@ module compression:
 
 use rule * from compression as compression_*
 
-use rule crumble from compression as compression_crumble with:
-    output:
-        crum="compression/crumble/{file}.crumble.cram",
+use rule crumble from compression as compression_crumble
 
 use rule samtools_view from compression as compression_samtools_view with:
     input:
@@ -43,9 +34,7 @@ use rule samtools_view from compression as compression_samtools_view with:
         bai="parabricks/pbrun_fq2bam/{file}.bam.bai",
         ref=config.get("reference", {}).get("fasta", ""),
 
-use rule spring from compression as compression_spring with:
-    output:
-        spring="compression/spring/{sample}_{flowcell}_{lane}_{barcode}_{type}.spring",
+use rule spring from compression as compression_spring
 
 
 module prealignment:
@@ -54,7 +43,7 @@ module prealignment:
     config:
         config
 
-use rule * from prealignment as module_*
+use rule * from prealignment as prealign_*
 
 
 module parabricks:
@@ -100,6 +89,8 @@ use rule picard_collect_alignment_summary_metrics from qc as qc_pic_align_sum_me
 use rule picard_collect_duplication_metrics from qc as qc_pic_dup_met with:
     input:
         bam="parabricks/pbrun_fq2bam/{sample}_{type}.bam",
+    output:
+        metrics="qc/picard_collect_duplication_metrics/{sample}_{type}.txt",
 
 use rule picard_collect_gc_bias_metrics from qc as qc_pic_gc_met with:
     input:

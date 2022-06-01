@@ -15,8 +15,6 @@ rule addRef:
         partition=config.get("multiqc", {}).get("partition", config["default_resources"]["partition"]),
         threads=config.get("multiqc", {}).get("threads", config["default_resources"]["threads"]),
         time=config.get("multiqc", {}).get("time", config["default_resources"]["time"]),
-    conda:
-        "../envs/parabricks.yaml"
     shell:
         "( python {params}/scripts/ref_vcf.py {input.vcf} {input.ref} {output} ) &> {log}"
 
@@ -52,7 +50,5 @@ rule bgzipNtabix:
         partition=config.get("multiqc", {}).get("partition", config["default_resources"]["partition"]),
         threads=config.get("multiqc", {}).get("threads", config["default_resources"]["threads"]),
         time=config.get("multiqc", {}).get("time", config["default_resources"]["time"]),
-    conda:
-        "../envs/parabricks.yaml"
     shell:
         "( bgzip {input} && tabix {input}.gz ) &> {log}"
