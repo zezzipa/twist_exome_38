@@ -24,8 +24,6 @@ module compression:
     config:
         config
 
-use rule * from compression as compression_*
-
 use rule crumble from compression as compression_crumble
 
 use rule samtools_view from compression as compression_samtools_view with:
@@ -52,14 +50,14 @@ module parabricks:
     config:
         config
 
-use rule * from parabricks as parabricks_*
+use rule pbrun_fq2bam from parabricks as parabricks_fq2bam
+
+use rule pbrun_deepvariant from parabricks as parabricks_deepvariant
 
 
 include: "rules/add_ref_to_vcf.smk"
 
 include: "rules/conifer.smk"
-
-include: "rules/peddy.smk"
 
 
 module qc:
@@ -76,10 +74,7 @@ use rule mosdepth_bed from qc as qc_mosdepth_bed with:
         bai="parabricks/pbrun_fq2bam/{sample}_{type}.bam.bai",
         bed=config["reference"]["design_bed"],
 
-use rule multiqc from qc as qc_multiqc with:
-    output:
-        html="qc/multiqc/multiqc_{report}.html",
-        directory=directory("qc/multiqc/multiqc_{report}_data"),
+use rule multiqc from qc as qc_multiqc
 
 use rule picard_collect_alignment_summary_metrics from qc as qc_pic_align_sum_met with:
     input:
@@ -89,8 +84,6 @@ use rule picard_collect_alignment_summary_metrics from qc as qc_pic_align_sum_me
 use rule picard_collect_duplication_metrics from qc as qc_pic_dup_met with:
     input:
         bam="parabricks/pbrun_fq2bam/{sample}_{type}.bam",
-    output:
-        metrics="qc/picard_collect_duplication_metrics/{sample}_{type}.txt",
 
 use rule picard_collect_gc_bias_metrics from qc as qc_pic_gc_met with:
     input:

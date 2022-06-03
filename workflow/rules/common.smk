@@ -48,7 +48,7 @@ wildcard_constraints:
 
 ### Functions
 
-def compile_output_list(wildcards: snakemake.io.Wildcards):
+def compile_output_list(wildcards):
     output_list = ["qc/multiqc/multiqc_DNA.html"]
     output_list.append([
         "vcf_final/%s.vcf.gz" % sample
@@ -62,16 +62,15 @@ def compile_output_list(wildcards: snakemake.io.Wildcards):
         for read in ["fastq1", "fastq2"]
     ])
     output_list.append([
+        "compression/spring/%s_%s_%s_%s_%s.spring" % (sample, flowcell, lane, barcode, t)
+        for sample in get_samples(samples)
+        for t in get_unit_types(units, sample)
+        for flowcell in set([u.flowcell for u in units.loc[(sample,t,)].dropna().itertuples()])
+        for barcode in set([u.barcode for u in units.loc[(sample,t,)].dropna().itertuples()])
+        for lane in set([u.lane for u in units.loc[(sample,t,)].dropna().itertuples()])
+    ])
+    output_list.append([
             "compression/crumble/%s_N.crumble.cram" % sample
             for sample in get_samples(samples)
     ])
     return output_list
-
-    # output_list.append([
-    #     "compression/spring/%s_%s_%s_%s_%s.spring" % (sample, flowcell, lane, barcode, t)
-    #     for sample in set(units["sample"])
-    #     for flowcell in set(units["flowcell"])
-    #     for lane in set(units["lane"])
-    #     for barcode in set(units["barcode"])
-    #     for t in set(units["type"])
-    # ])

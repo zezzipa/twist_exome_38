@@ -14,8 +14,10 @@ modules:
   cnv_sv: "master"
   parabricks: "v0.2.0"
   prealignment: "v0.3.1"
-  qc: "add_samtools_idxstats"
+  qc: "master"
   misc: "v0.1.0"
+
+#qc: "364b286e21efc462624ab0917a1d29bc55ed541d"
 
 reference:
   conifer: "/beegfs-storage/projects/wp3/nobackup/Workspace/CoNIFER/Twist_Exome_Target_hg38_woY.bed"
@@ -43,97 +45,97 @@ fastqc:
   container: "docker://hydragenetics/fastqc:0.11.9"
 
 mosdepth_bed:
- container: "docker://hydragenetics/mosdepth:0.3.2"
- extra: "--fast-mode "
+  container: "docker://hydragenetics/mosdepth:0.3.2"
+  extra: "--fast-mode "
 
 multiqc:
-  container: "docker://hydragenetics/multiqc:1.11"
-  reports:
-    DNA:
-      config: "multiqc.config"
-      included_unit_types: ['N']
-      qc_files:
-        - "qc/fastqc/{sample}_{type}_{flowcell}_{lane}_{barcode}_{read}_fastqc.zip"
-        - "qc/mosdepth_bed/{sample}_{type}.per-base.bed.gz"
-        - "qc/mosdepth_bed/{sample}_{type}.mosdepth.global.dist.txt"
-        - "qc/mosdepth_bed/{sample}_{type}.mosdepth.region.dist.txt"
-        - "qc/mosdepth_bed/{sample}_{type}.mosdepth.summary.txt"
-        - "qc/mosdepth_bed/{sample}_{type}.regions.bed.gz"
-        - "qc/mosdepth_bed/{sample}_{type}.regions.bed.gz.csi"
-        - "qc/picard_collect_alignment_summary_metrics/{sample}_{type}.alignment_summary_metrics.txt"
-        - "qc/picard_collect_duplication_metrics/{sample}_{type}.txt"
-        - "qc/picard_collect_gc_bias_metrics/{sample}_{type}.gc_bias.pdf"
-        - "qc/picard_collect_gc_bias_metrics/{sample}_{type}.gc_bias.detail_metrics"
-        - "qc/picard_collect_gc_bias_metrics/{sample}_{type}.gc_bias.summary_metrics"
-        - "qc/picard_collect_hs_metrics/{sample}_{type}.HsMetrics.txt"
-        - "qc/picard_collect_insert_size_metrics/{sample}_{type}.insert_size_metrics.txt"
-        - "qc/picard_collect_multiple_metrics/{sample}_{type}.alignment_summary_metrics"
-        - "qc/picard_collect_multiple_metrics/{sample}_{type}.base_distribution_by_cycle_metrics"
-        - "qc/picard_collect_multiple_metrics/{sample}_{type}.base_distribution_by_cycle.pdf"
-        - "qc/picard_collect_multiple_metrics/{sample}_{type}.insert_size_metrics"
-        - "qc/picard_collect_multiple_metrics/{sample}_{type}.insert_size_histogram.pdf"
-        - "qc/picard_collect_multiple_metrics/{sample}_{type}.quality_by_cycle_metrics"
-        - "qc/picard_collect_multiple_metrics/{sample}_{type}.quality_by_cycle.pdf"
-        - "qc/picard_collect_multiple_metrics/{sample}_{type}.quality_distribution_metrics"
-        - "qc/picard_collect_multiple_metrics/{sample}_{type}.quality_distribution.pdf"
-        - "qc/samtools_stats/{sample}_{type}.samtools-stats.txt"
-        - "qc/samtools_idxstats/{sample}_{type}.samtools-idxstats.txt"
+  container: "docker://marrip/multiqc:1.11"
+  config: "multiqc.config"
+  qc_files:
+    - "qc/mosdepth_bed/{sample}_{type}.mosdepth.global.dist.txt"
+    - "qc/mosdepth_bed/{sample}_{type}.mosdepth.region.dist.txt"
+    - "qc/mosdepth_bed/{sample}_{type}.mosdepth.summary.txt"
+    - "qc/mosdepth_bed/{sample}_{type}.regions.bed.gz"
+    - "qc/mosdepth_bed/{sample}_{type}.regions.bed.gz.csi"
+    - "qc/mosdepth_bed/{sample}_{type}.per-base.bed.gz"
+    - "prealignment/fastp_pe/{sample}_{flowcell}_{lane}_{barcode}_{type}.json"
+    - "qc/fastqc/{sample}_{type}_{flowcell}_{lane}_{barcode}_{read}_fastqc.zip"
+    - "qc/picard_collect_alignment_summary_metrics/{sample}_{type}.alignment_summary_metrics.txt"
+    - "qc/picard_collect_duplication_metrics/{sample}_{type}.duplication_metrics.txt"
+    - "qc/picard_collect_gc_bias_metrics/{sample}_{type}.gc_bias.pdf"
+    - "qc/picard_collect_gc_bias_metrics/{sample}_{type}.gc_bias.detail_metrics"
+    - "qc/picard_collect_gc_bias_metrics/{sample}_{type}.gc_bias.summary_metrics"
+    - "qc/picard_collect_hs_metrics/{sample}_{type}.HsMetrics.txt"
+    - "qc/picard_collect_insert_size_metrics/{sample}_{type}.insert_size_metrics.txt"
+    - "qc/picard_collect_multiple_metrics/{sample}_{type}.alignment_summary_metrics"
+    - "qc/picard_collect_multiple_metrics/{sample}_{type}.base_distribution_by_cycle_metrics"
+    - "qc/picard_collect_multiple_metrics/{sample}_{type}.base_distribution_by_cycle.pdf"
+    - "qc/picard_collect_multiple_metrics/{sample}_{type}.insert_size_metrics"
+    - "qc/picard_collect_multiple_metrics/{sample}_{type}.insert_size_histogram.pdf"
+    - "qc/picard_collect_multiple_metrics/{sample}_{type}.quality_by_cycle_metrics"
+    - "qc/picard_collect_multiple_metrics/{sample}_{type}.quality_by_cycle.pdf"
+    - "qc/picard_collect_multiple_metrics/{sample}_{type}.quality_distribution_metrics"
+    - "qc/picard_collect_multiple_metrics/{sample}_{type}.quality_distribution.pdf"
+    - "qc/samtools_stats/{sample}_{type}.samtools-stats.txt"
+    - "qc/samtools_idxstats/{sample}_{type}.samtools-idxstats.txt"
 
-#        - "prealignment/fastp_pe/{sample}_{run}_{lane}_{type}.json"
+#Qualimaps
+#Somalier
+
+  # reports:
+  #   DNA:
+  #     included_unit_types: ['N']
 
 picard_collect_alignment_summary_metrics:
- container: "docker://hydragenetics/picard:2.25.0"
- threads: 6
+  container: "docker://hydragenetics/picard:2.25.0"
+  threads: 3
 
 picard_collect_duplication_metrics:
- container: "docker://hydragenetics/picard:2.25.0"
- threads: 3
+  container: "docker://hydragenetics/picard:2.25.0"
+  threads: 2
 
 picard_collect_gc_bias_metrics:
- container: "docker://hydragenetics/picard:2.25.0"
- threads: 6
+  container: "docker://hydragenetics/picard:2.25.0"
+  threads: 3
 
 picard_collect_hs_metrics:
- container: "docker://hydragenetics/picard:2.25.0"
- threads: 6
+  container: "docker://hydragenetics/picard:2.25.0"
+  threads: 3
 
 picard_collect_insert_size_metrics:
- container: "docker://hydragenetics/picard:2.25.0"
- threads: 3
+  container: "docker://hydragenetics/picard:2.25.0"
+  threads: 2
 
 picard_collect_multiple_metrics:
- container: "docker://hydragenetics/picard:2.25.0"
- threads: 6
- # output_ext:
- #  - "alignment_summary_metrics"
- #  - "base_distribution_by_cycle_metrics"
- #  - "base_distribution_by_cycle.pdf"
- #  - "insert_size_metrics"
- #  - "insert_size_histogram.pdf"
- #  - "quality_by_cycle_metrics"
- #  - "quality_by_cycle.pdf"
- #  - "quality_distribution_metrics"
- #  - "quality_distribution.pdf"
-
-# picard_collect_wgs_metrics:
-#   container: "docker://hydragenetics/picard:2.25.0"
+  container: "docker://hydragenetics/picard:2.25.0"
+  output_ext:
+    - "alignment_summary_metrics"
+    - "base_distribution_by_cycle_metrics"
+    - "base_distribution_by_cycle.pdf"
+    - "insert_size_metrics"
+    - "insert_size_histogram.pdf"
+    - "quality_by_cycle_metrics"
+    - "quality_by_cycle.pdf"
+    - "quality_distribution_metrics"
+    - "quality_distribution.pdf"
+  threads: 3
 
 samtools_stats:
- container: "docker://hydragenetics/common:0.1.0"
- threads: 3
+  container: "docker://hydragenetics/common:0.1.3"
+  threads: 3
 
 samtools_idxstats:
- container: "docker://hydragenetics/common:0.1.0"
- threads: 3
+  container: "docker://hydragenetics/common:0.1.3"
+  threads: 3
 
 samtools:
-  container: "docker://hydragenetics/common:0.1.0"
+  container: "docker://hydragenetics/common:0.1.3"
 
 spring:
   container: "docker://hydragenetics/spring:1.0.1"
 
 tabix:
-  container: "docker://hydragenetics/common:0.1.0"
+  container: "docker://hydragenetics/common:0.1.3"
 
 genepanels:
   - /projects/wp3/Reference_files/Manifest/Clinical_research_exome/Gene_panels/ALS.bed
