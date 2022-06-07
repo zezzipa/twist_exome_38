@@ -31,6 +31,23 @@ rule conifer_mapq20_index:
     shell:
         "samtools index {input}"
 
+rule conifer_sex:
+    input:
+        idx=expand("qc/samtools_idxstats/%s_N.samtools-idxstats.txt",  % sample for sample in get_samples(samples)),
+    output:
+        temp("samples_sv.tsv"),
+    params:
+        config["programdir"]["dir"],
+    resources:
+        mem_mb=config.get("conifer", {}).get("mem_mb", config["default_resources"]["mem_mb"]),
+        mem_per_cpu=config.get("conifer", {}).get("mem_per_cpu", config["default_resources"]["mem_per_cpu"]),
+        partition=config.get("conifer", {}).get("partition", config["default_resources"]["partition"]),
+        threads=config.get("conifer", {}).get("threads", config["default_resources"]["threads"]),
+        time=config.get("conifer", {}).get("time", config["default_resources"]["time"]),
+    container:
+        config.get(config["default_container"]),
+    shell:
+        "python {params}/scripts/divie_sexes.py"
 
 rule conifer_rpkm:
     input:
@@ -38,7 +55,7 @@ rule conifer_rpkm:
         bai="conifer/MAPQ20/{sample}.MAPQ20.bam.bai",
         ref=config["reference"]["conifer"],
     output:
-        RPKM="conifer/RPKM/{sample}.rpkm",
+        RPKM="conifer/RPKM_{sex}/{sample}.rpkm",
     log:
         "conifer/{sample}.rpkm.log",
     benchmark:
@@ -68,17 +85,17 @@ rule conifer_rpkm:
 
 rule conifer_analyze:
     input:
-        rpkm=expand("conifer/RPKM/%s.rpkm" % sample for sample in get_samples(samples)),
+        rpkm=expand("conifer/RPKM_{sex}/%s.rpkm" % sample for sample in get_samples(samples)),
         ref=config["reference"]["conifer"],
     output:
-        hdf5=temp("conifer/SVD-ZRPKM/analyse_svd6.hdf5"),
-        svtxt=temp("conifer/SVD-ZRPKM/singular_values.txt"),
-        sdtxt=temp("conifer/SVD-ZRPKM/sd_values.txt"),
+        hdf5=temp("conifer/SVD-ZRPKM/analyse_{sex}_svd6.hdf5"),
+        svtxt=temp("conifer/SVD-ZRPKM/singular_{sex}_values.txt"),
+        sdtxt=temp("conifer/SVD-ZRPKM/sd_{sex}_values.txt"),
     log:
-        "conifer/SVD-ZRPKM/conifer_analyze.log",
+        "conifer/SVD-ZRPKM/conifer_{sex}_analyze.log",
     benchmark:
         repeat(
-            "conifer/SVD-ZRPKM/conifer_analyze.benchmark.tsv",
+            "conifer/SVD-ZRPKM/conifer_{sex}_analyze.benchmark.tsv",
             config.get("conifer", {}).get("benchmark_repeats", 1),
         )
     threads: config.get("conifer", {}).get("threads", config["default_resources"]["threads"]),
@@ -112,14 +129,14 @@ rule conifer_analyze:
 
 rule conifer_call:
     input:
-        "conifer/SVD-ZRPKM/analyse_svd6.hdf5",
+        "conifer/SVD-ZRPKM/analyse_{sex}_svd6.hdf5",
     output:
-        "conifer/calls/calls_svd6.txt",
+        "conifer/calls/calls_{sex}_svd6.txt",
     log:
-        "conifer/calls/conifer_call.log",
+        "conifer/calls/conifer_{sex}_call.log",
     benchmark:
         repeat(
-            "conifer/calls/conifer_call.benchmark.tsv",
+            "conifer/calls/conifer_{sex}_call.benchmark.tsv",
             config.get("conifer", {}).get("benchmark_repeats", 1),
         )
     threads: config.get("conifer", {}).get("threads", config["default_resources"]["threads"]),

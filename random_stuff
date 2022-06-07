@@ -6,10 +6,10 @@ pip install hydra-genetics
 pip install snakemake
 pip install -r ../requirements.txt
 pip install pysam
-module load singularity
 module load slurm-drmaa
 module load bcbio-nextgen
 pip install --upgrade snakemake
+module load singularity
 pip install --upgrade hydra_genetics
 pip install drmaa
 #

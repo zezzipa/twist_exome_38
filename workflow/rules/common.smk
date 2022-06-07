@@ -29,6 +29,7 @@ validate(config, schema="../schemas/resources.schema.yaml")
 samples = pandas.read_table(config["samples"], dtype=str).set_index("sample", drop=False)
 validate(samples, schema="../schemas/samples.schema.yaml")
 
+samples_sv = pandas.read_table(config["samples_sv"], dtype=str).set_index("sample","sex", drop=False)
 
 ### Read and validate units file
 units = pandas.read_table(config["units"], dtype=str).set_index(["sample", "type", "flowcell", "barcode", "lane"], drop=False).sort_index()
@@ -44,6 +45,7 @@ wildcard_constraints:
     sample="|".join(get_samples(samples)),
     type="N|T|R",
     read="fastq[1|2]",
+    sex="M|F",
 
 
 ### Functions
