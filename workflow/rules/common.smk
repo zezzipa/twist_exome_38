@@ -29,7 +29,6 @@ validate(config, schema="../schemas/resources.schema.yaml")
 samples = pandas.read_table(config["samples"], dtype=str).set_index("sample", drop=False)
 validate(samples, schema="../schemas/samples.schema.yaml")
 
-samples_sv = pandas.read_table(config["samples_sv"], dtype=str).set_index("sample","sex", drop=False)
 
 ### Read and validate units file
 units = pandas.read_table(config["units"], dtype=str).set_index(["sample", "type", "flowcell", "barcode", "lane"], drop=False).sort_index()
@@ -56,7 +55,8 @@ def compile_output_list(wildcards):
         "vcf_final/%s.vcf.gz" % sample
         for sample in get_samples(samples)
     ])
-    output_list.append("conifer/calls/calls_svd6.txt")
+    output_list.append("conifer/calls/calls_F_svd6.txt")
+    output_list.append("conifer/calls/calls_M_svd6.txt")
     output_list.append([
         "prealignment/merged/{}_{}_{}.fastq.gz".format(sample, t, read)
         for sample in get_samples(samples)

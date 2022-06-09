@@ -34,6 +34,7 @@ trimmer_software: "fastp_pe"
 
 conifer:
   container: "docker://hydragenetics/conifer:0.2.2"
+  dir: "/beegfs-storage/projects/wp3/nobackup/Workspace/CoNIFER/hg38/"
 
 crumble:
   container: "docker://hydragenetics/crumble:0.8.3"
