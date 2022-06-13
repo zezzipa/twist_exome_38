@@ -32,9 +32,13 @@ with open(workdir+"/qc/samtools_idxstats/idxstats_ratio.txt", "a") as f:
 			if sex < 0.03:
 				f.write(sample+"\t"+ratio+"\tF\n")
 				shutil.copy("conifer/RPKM/"+sample+".rpkm","/beegfs-storage/projects/wp3/nobackup/Workspace/CoNIFER/hg38/RPKM_F/"+sample+".rpkm")
+				shutil.copy("parabricks/pbrun_fq2bam/"+sample+"_N.bam","/scratch/wp3/Exomedepth/female/"+sample+"_N.bam")
+				shutil.copy("parabricks/pbrun_fq2bam/"+sample+"_N.bam.bai","/scratch/wp3/Exomedepth/female/"+sample+"_N.bam.bai")
 			elif sex > 0.09:
 				f.write(sample+"\t"+ratio+"\tM\n")
 				shutil.copy("conifer/RPKM/"+sample+".rpkm","/beegfs-storage/projects/wp3/nobackup/Workspace/CoNIFER/hg38/RPKM_M/"+sample+".rpkm")
+				shutil.copy("parabricks/pbrun_fq2bam/"+sample+"_N.bam","/scratch/wp3/Exomedepth/male/"+sample+"_N.bam")
+				shutil.copy("parabricks/pbrun_fq2bam/"+sample+"_N.bam.bai","/scratch/wp3/Exomedepth/male/"+sample+"_N.bam.bai")
 			else:
 				f.write(sample+"\t"+ratio+"\tUnsolved\n")
 				shutil.copy("conifer/RPKM/"+sample+".rpkm","/beegfs-storage/projects/wp3/nobackup/Workspace/CoNIFER/hg38/RPKM_U/"+sample+".rpkm")
