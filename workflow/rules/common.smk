@@ -58,6 +58,10 @@ def compile_output_list(wildcards):
     output_list.append("conifer/calls/calls_F_svd6.txt")
     output_list.append("conifer/calls/calls_M_svd6.txt")
     output_list.append([
+        "cnv_sv/exomedepth/%s_N.SV.txt" % sample
+        for sample in get_samples(samples)
+    ])
+    output_list.append([
         "prealignment/merged/{}_{}_{}.fastq.gz".format(sample, t, read)
         for sample in get_samples(samples)
         for t in get_unit_types(units, sample)

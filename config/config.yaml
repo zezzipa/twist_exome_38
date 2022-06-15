@@ -12,7 +12,7 @@ programdir:
 
 modules:
   compression: "v1.1.0"
-  cnv_sv: "master"
+  cnv_sv: "5738dd8"
   parabricks: "v0.2.0"
   prealignment: "v0.3.1"
   qc: "zezzipa-patch-1"
@@ -32,6 +32,10 @@ reference:
 
 trimmer_software: "fastp_pe"
 
+automap:
+  dir: "/projects/wp3/nobackup/Workspace/ROH/AutoMap-master/AutoMap_v1.2.sh"
+  genome_build: "hg38"
+
 conifer:
   container: "docker://hydragenetics/conifer:0.2.2"
   dir: "/beegfs-storage/projects/wp3/nobackup/Workspace/CoNIFER/hg38/"
@@ -41,8 +45,9 @@ crumble:
   extra: "-O CRAM"
 
 exomedepth:
-  ref: "/projects/wp3/nobackup/Workspace/ExomeDepth/files/"
-  container: "/projects/wp3/nobackup/Workspace/ExomeDepth/ExomeDepth.1.1.10.simg"
+  container: "docker://gmsuppsala/somatic:develop"
+  bedfile: "/projects/wp3/nobackup/Workspace/ExomeDepth/Twist_hg38.txt"
+  reference_count_dir: "/projects/wp3/nobackup/Workspace/ExomeDepth/files"
 
 fastp_pe:
   container: "docker://hydragenetics/fastp:0.20.1"
