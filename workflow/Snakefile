@@ -44,7 +44,7 @@ use rule exomedepth from cnv_sv as cnv_exomedepth with:
     input:
         bam="parabricks/pbrun_fq2bam/{sample}_{type}.bam",
         bedfile=config.get("exomedepth", {}).get("bedfile", ""),
-        ref_count=config.get("exomedepth", {}).get("ref_count_dir", "")/{sex}_RefCount.mat,
+        ref_count=config.get("exomedepth", {}).get("ref_count_dir", "")+"/{sex}_RefCount.mat",
 
 
 module prealignment:

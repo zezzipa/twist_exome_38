@@ -1,6 +1,6 @@
 ---
 
-resources: "resources.yaml"
+resources: "twist_exome_hg37/config/resources.yaml"
 samples: "samples.tsv"
 samples_sv: "samples_sv.tsv"
 units: "units.tsv"
@@ -8,7 +8,8 @@ units: "units.tsv"
 default_container: "docker://hydragenetics/common:0.1.3"
 
 programdir:
-  dir: "/projects/wp3/nobackup/Workspace/Jessika_playground/twist_exome_38-main/workflow"
+  dir: "/projects/wp3/nobackup/TWIST/INBOX/TE105_220513/220513_NB501298_0363_AHLYCJBGXL"
+#  dir: "/projects/wp3/nobackup/Workspace/Jessika_playground/twist_exome_38-main/workflow"
 
 modules:
   compression: "v1.1.0"
@@ -21,24 +22,24 @@ modules:
 #qc: "364b286e21efc462624ab0917a1d29bc55ed541d"
 
 reference:
-  conifer: "/beegfs-storage/projects/wp3/nobackup/Workspace/CoNIFER/Twist_Exome_Target_hg38_woY.bed"
-  design_bed: "/beegfs-storage/projects/wp3/Reference_files/Manifest/Clinical_research_exome/TWIST/Twist_Comprehensive_Exome_Covered_Targets_hg38.bed"
-  design_intervals: "/beegfs-storage/projects/wp3/Reference_files/Manifest/Clinical_research_exome/TWIST/Twist_Comprehensive_Exome_Covered_Targets_hg38_interval_list.bed"
-  fasta: "/beegfs-storage/data/ref_genomes/GRCh38/reference_grasnatter/homo_sapiens.fasta"
-  fai: "/beegfs-storage/data/ref_genomes/GRCh38/reference_grasnatter/homo_sapiens.fasta.fai"
-  genome_dir: "/beegfs-storage/data/ref_genomes/GRCh38/reference_grasnatter/homo_sapiens_star"
-  sites: "/beegfs-storage/data/ref_genomes/GRCh38/reference_grasnatter/homo_sapiens.known_indels.vcf.gz"
+  conifer: "/beegfs-storage/projects/wp3/nobackup/Workspace/CoNIFER/Twist_Exome_Target_hg19_woY.bed"
+  design_bed: "/beegfs-storage/projects/wp3/Reference_files/Manifest/Clinical_research_exome/TWIST/Twist_Exome_Target_hg19.bed"
+  design_intervals: "/beegfs-storage/projects/wp3/Reference_files/Manifest/Clinical_research_exome/TWIST/Twist_Exome_Target_hg19_interval_list.bed"
+  fasta: "/data/ref_genomes/bcbio-nextgen/sam/hg19.with.mt.fasta"
+  fai: "/data/ref_genomes/bcbio-nextgen/sam/hg19.with.mt.fasta.fai "
+  genome_dir: "/data/ref_genomes/bcbio-nextgen/sam/"
+  sites: "/data/ref_genomes/bcbio-nextgen/gatk/hg19_v0_Homo_sapiens_assembly19.known_indels.vcf"
 
 
 trimmer_software: "fastp_pe"
 
 automap:
   dir: "/projects/wp3/nobackup/Workspace/ROH/AutoMap-master/AutoMap_v1.2.sh"
-  genome_build: "hg38"
+  genome_build: "hg19"
 
 conifer:
   container: "docker://hydragenetics/conifer:0.2.2"
-  dir: "/beegfs-storage/projects/wp3/nobackup/Workspace/CoNIFER/hg38/"
+  dir: "/beegfs-storage/projects/wp3/nobackup/Workspace/CoNIFER/hg19/"
 
 crumble:
   container: "docker://hydragenetics/crumble:0.8.3"
@@ -46,7 +47,7 @@ crumble:
 
 exomedepth:
   container: "docker://gmsuppsala/somatic:develop"
-  bedfile: "/projects/wp3/nobackup/Workspace/ExomeDepth/Twist_hg38.txt"
+  bedfile: "/projects/wp3/nobackup/Workspace/ExomeDepth/files/twist.hg19.txt"
   reference_count_dir: "/projects/wp3/nobackup/Workspace/ExomeDepth/files"
 
 fastp_pe:

@@ -1,4 +1,3 @@
-#om du lägger din config.yaml i /home/jessika/.config/snakemake/{profilnamn} kan du bara köra snakemake --profile {profilnamn}
 
 jobs: 100
 keep-going: True
