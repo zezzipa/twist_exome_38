@@ -2,13 +2,12 @@
 
 resources: "twist_exome_hg37/config/resources.yaml"
 samples: "samples.tsv"
-samples_sv: "samples_sv.tsv"
 units: "units.tsv"
 
 default_container: "docker://hydragenetics/common:0.1.3"
 
 programdir:
-  dir: "/projects/wp3/nobackup/TWIST/INBOX/TE105_220513/220513_NB501298_0363_AHLYCJBGXL"
+  dir: "/projects/wp3/nobackup/TWIST/INBOX/TE105_220513/220513_NB501298_0363_AHLYCJBGXL/twist_exome_hg37/workflow"
 #  dir: "/projects/wp3/nobackup/Workspace/Jessika_playground/twist_exome_38-main/workflow"
 
 modules:
@@ -25,10 +24,10 @@ reference:
   conifer: "/beegfs-storage/projects/wp3/nobackup/Workspace/CoNIFER/Twist_Exome_Target_hg19_woY.bed"
   design_bed: "/beegfs-storage/projects/wp3/Reference_files/Manifest/Clinical_research_exome/TWIST/Twist_Exome_Target_hg19.bed"
   design_intervals: "/beegfs-storage/projects/wp3/Reference_files/Manifest/Clinical_research_exome/TWIST/Twist_Exome_Target_hg19_interval_list.bed"
-  fasta: "/data/ref_genomes/bcbio-nextgen/sam/hg19.with.mt.fasta"
-  fai: "/data/ref_genomes/bcbio-nextgen/sam/hg19.with.mt.fasta.fai "
-  genome_dir: "/data/ref_genomes/bcbio-nextgen/sam/"
-  sites: "/data/ref_genomes/bcbio-nextgen/gatk/hg19_v0_Homo_sapiens_assembly19.known_indels.vcf"
+  fasta: "/beegfs-storage/data/ref_genomes/bcbio-nextgen/sam/hg19.with.mt.fasta"
+  fai: "/beegfs-storage/data/ref_genomes/bcbio-nextgen/sam/hg19.with.mt.fasta.fai "
+  genome_dir: "/beegfs-storage/data/ref_genomes/bcbio-nextgen/sam/"
+  sites: "/beegfs-storage/data/ref_genomes/bcbio-nextgen/gatk/hg19_v0_Homo_sapiens_assembly19.known_indels.vcf"
 
 
 trimmer_software: "fastp_pe"
@@ -46,9 +45,9 @@ crumble:
   extra: "-O CRAM"
 
 exomedepth:
-  container: "docker://gmsuppsala/somatic:develop"
-  bedfile: "/projects/wp3/nobackup/Workspace/ExomeDepth/files/twist.hg19.txt"
-  reference_count_dir: "/projects/wp3/nobackup/Workspace/ExomeDepth/files"
+  container: "/projects/wp3/nobackup/Workspace/ExomeDepth/ExomeDepth.1.1.10.simg"
+  bedfile: "/beegfs-storage/projects/wp3/nobackup/Workspace/ExomeDepth/files/twist.hg19.txt"
+  ref_count: "/beegfs-storage/projects/wp3/nobackup/Workspace/ExomeDepth/files/M_RefCount.mat"
 
 fastp_pe:
   container: "docker://hydragenetics/fastp:0.20.1"

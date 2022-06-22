@@ -72,10 +72,11 @@ rule conifer_sex:
         rpkm=expand("conifer/RPKM/%s.rpkm" % sample for sample in get_samples(samples)),
         idx="qc/multiqc/multiqc_DNA.html",
     output:
-        temp("samples_sv.tsv"),
+        M=temp("M.txt"),
+        F=temp("F.txt"),
         done="conifer/RPKM/Done.txt",
     log:
-        "conifer/RPKM/conifer_divide_sex.log",
+        "conifer/RPKM/divide_sexes.log",
     params:
         config["programdir"]["dir"],
     resources:
@@ -88,6 +89,28 @@ rule conifer_sex:
         config.get(config["default_container"]),
     shell:
         "python {params}/scripts/divide_sexes.py &> {log}"
+
+
+rule exomedepth_sex:
+    input:
+        bam="parabricks/pbrun_fq2bam/{sample}_N.bam",
+        bai="parabricks/pbrun_fq2bam/{sample}_N.bam.bai",
+    output:
+        "/beegfs-scratch/wp3/ExomeDepth/{sex}/{sample}_N.bam",
+    log:
+        "/beegfs-scratch/wp3/ExomeDepth/{sex}/{sample}_moved.log",
+    params:
+        config["programdir"]["dir"],
+    resources:
+        mem_mb=config.get("conifer", {}).get("mem_mb", config["default_resources"]["mem_mb"]),
+        mem_per_cpu=config.get("conifer", {}).get("mem_per_cpu", config["default_resources"]["mem_per_cpu"]),
+        partition=config.get("conifer", {}).get("partition", config["default_resources"]["partition"]),
+        threads=config.get("conifer", {}).get("threads", config["default_resources"]["threads"]),
+        time=config.get("conifer", {}).get("time", config["default_resources"]["time"]),
+    container:
+        config.get(config["default_container"]),
+    script:
+        "{params}/scripts/move_ed.py"
 
 
 rule conifer_analyze:

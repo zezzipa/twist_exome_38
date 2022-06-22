@@ -34,6 +34,9 @@ validate(samples, schema="../schemas/samples.schema.yaml")
 units = pandas.read_table(config["units"], dtype=str).set_index(["sample", "type", "flowcell", "barcode", "lane"], drop=False).sort_index()
 validate(units, schema="../schemas/units.schema.yaml")
 
+Msamples = pandas.read_table("M.txt", dtype=str).set_index("samples", drop=False)
+Fsamples = pandas.read_table("F.txt", dtype=str).set_index("samples", drop=False)
+
 
 ### Set wildcard constraints
 wildcard_constraints:
@@ -80,3 +83,13 @@ def compile_output_list(wildcards):
             for sample in get_samples(samples)
     ])
     return output_list
+
+
+    # output_list.append([
+    #     "cnv_sv/exomedepth_F/%s_N.SV.txt" % samples
+    #     for samples in get_samples(Fsamples)
+    # ])
+    # output_list.append([
+    #     "cnv_sv/exomedepth_M/%s_N.SV.txt" % samples
+    #     for samples in get_samples(Msamples)
+    # ])
