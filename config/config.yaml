@@ -45,8 +45,8 @@ crumble:
   extra: "-O CRAM"
 
 exomedepth:
-  container: "/projects/wp3/nobackup/Workspace/ExomeDepth/ExomeDepth.1.1.10.simg"
-  bedfile: "/beegfs-storage/projects/wp3/nobackup/Workspace/ExomeDepth/files/twist.hg19.txt"
+  container: "/beegfs-storage/projects/wp3/nobackup/Workspace/ExomeDepth/ExomeDepth.1.1.10.simg"
+  bedfile: "/beegfs-storage/projects/wp3/nobackup/Workspace/ExomeDepth/files/twist.hg19_chr.txt"
   ref_count: "/beegfs-storage/projects/wp3/nobackup/Workspace/ExomeDepth/files/M_RefCount.mat"
 
 fastp_pe:
