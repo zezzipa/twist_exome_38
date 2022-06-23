@@ -27,6 +27,3 @@ for line in open("samples_sv.tsv","r"):
 		if "M" in line:
 			shutil.copy("parabricks/pbrun_fq2bam/"+sample+"_N.bam","cnv_sv/exomedepth_M/"+sample+"_N.bam")
 			shutil.copy("parabricks/pbrun_fq2bam/"+sample+"_N.bam.bai","cnv_sv/exomedepth_M/"+sample+"_N.bam.bai")
-
-df.to_csv("cnv_sv/exomedepth_M/Done.txt", sep='\t', index=False)
-df.to_csv("cnv_sv/exomedepth_F/Done.txt", sep='\t', index=False)

@@ -42,10 +42,8 @@ module cnv_sv:
 
 use rule exomedepth from cnv_sv as cnv_exomedepth with:
     input:
-        bam="cnv_sv/exomedepth_F/"+sample+"_N.bam",
+        bam="cnv_sv/exomedepth_{sex}/{sample}_N.bam",
         bedfile=config.get("exomedepth", {}).get("bedfile", ""),
-        F="cnv_sv/exomedepth_F/Done.txt",
-        M="cnv_sv/exomedepth_M/Done.txt",
         ref_count=config.get("exomedepth", {}).get("ref_count", "")+"/{sex}_RefCount.mat",
     output:
         result=temp("cnv_sv/exomedepth_{sex}/{sample}_{type}.txt"),

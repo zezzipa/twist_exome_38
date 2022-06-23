@@ -95,9 +95,9 @@ rule exomedepth_sex:
         bai="parabricks/pbrun_fq2bam/{sample}_N.bam.bai",
         done="conifer/RPKM/Done.txt",
     output:
-        "/cnv_sv/exomedepth_{sex}/{sample}_N.bam",
+        bam="cnv_sv/exomedepth_{sex}/{sample}_N.bam",
     log:
-        "/cnv_sv/exomedepth_{sex}/{sample}_moved.log",
+        "cnv_sv/exomedepth_{sex}/{sample}_moved.log",
     params:
         config["programdir"]["dir"],
     resources:
