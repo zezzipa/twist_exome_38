@@ -12,11 +12,11 @@ from hydra_genetics.utils.units import *
 from snakemake.utils import min_version
 from snakemake.utils import validate
 
-min_version("6.10.0")
+min_version("7.8.0")
 
 
 ### Set and validate config file
-configfile: "config.yaml"
+configfile: "twist_exome_hg37/config/config.yaml"
 validate(config, schema="../schemas/config.schema.yaml")
 
 
@@ -61,7 +61,11 @@ def compile_output_list(wildcards):
     output_list.append("conifer/calls/calls_F_svd6.txt")
     output_list.append("conifer/calls/calls_M_svd6.txt")
     output_list.append([
-        "cnv_sv/exomedepth/%s_N.SV.txt" % sample
+        "cnv_sv/exomedepth_F/%s_N.SV.txt" % sample
+        for sample in get_samples(samples)
+    ])
+    output_list.append([
+        "cnv_sv/exomedepth_M/%s_N.SV.txt" % sample
         for sample in get_samples(samples)
     ])
     output_list.append([
@@ -83,13 +87,3 @@ def compile_output_list(wildcards):
             for sample in get_samples(samples)
     ])
     return output_list
-
-
-    # output_list.append([
-    #     "cnv_sv/exomedepth_F/%s_N.SV.txt" % samples
-    #     for samples in get_samples(Fsamples)
-    # ])
-    # output_list.append([
-    #     "cnv_sv/exomedepth_M/%s_N.SV.txt" % samples
-    #     for samples in get_samples(Msamples)
-    # ])

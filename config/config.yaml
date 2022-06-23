@@ -12,7 +12,7 @@ programdir:
 
 modules:
   compression: "v1.1.0"
-  cnv_sv: "5738dd8"
+  cnv_sv: "exomedepth"
   parabricks: "v0.2.0"
   prealignment: "v0.3.1"
   qc: "zezzipa-patch-1"
@@ -47,7 +47,7 @@ crumble:
 exomedepth:
   container: "/beegfs-storage/projects/wp3/nobackup/Workspace/ExomeDepth/ExomeDepth.1.1.10.simg"
   bedfile: "/beegfs-storage/projects/wp3/nobackup/Workspace/ExomeDepth/files/twist.hg19_chr.txt"
-  ref_count: "/beegfs-storage/projects/wp3/nobackup/Workspace/ExomeDepth/files/M_RefCount.mat"
+  ref_count: "/beegfs-storage/projects/wp3/nobackup/Workspace/ExomeDepth/files"
 
 fastp_pe:
   container: "docker://hydragenetics/fastp:0.20.1"

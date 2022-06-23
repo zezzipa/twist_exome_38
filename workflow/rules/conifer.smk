@@ -72,8 +72,6 @@ rule conifer_sex:
         rpkm=expand("conifer/RPKM/%s.rpkm" % sample for sample in get_samples(samples)),
         idx="qc/multiqc/multiqc_DNA.html",
     output:
-        M=temp("M.txt"),
-        F=temp("F.txt"),
         done="conifer/RPKM/Done.txt",
     log:
         "conifer/RPKM/divide_sexes.log",
@@ -95,10 +93,11 @@ rule exomedepth_sex:
     input:
         bam="parabricks/pbrun_fq2bam/{sample}_N.bam",
         bai="parabricks/pbrun_fq2bam/{sample}_N.bam.bai",
+        done="conifer/RPKM/Done.txt",
     output:
-        "/beegfs-scratch/wp3/ExomeDepth/{sex}/{sample}_N.bam",
+        "/cnv_sv/exomedepth_{sex}/{sample}_N.bam",
     log:
-        "/beegfs-scratch/wp3/ExomeDepth/{sex}/{sample}_moved.log",
+        "/cnv_sv/exomedepth_{sex}/{sample}_moved.log",
     params:
         config["programdir"]["dir"],
     resources:

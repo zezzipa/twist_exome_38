@@ -4,7 +4,7 @@ source venv/bin/activate
 pip install hydra-genetics
 
 pip install snakemake
-pip install -r ../requirements.txt
+pip install -r requirements.txt
 pip install pysam
 module load slurm-drmaa
 module load bcbio-nextgen
@@ -21,6 +21,8 @@ source venv/bin/activate
 
 
 snakemake --profil twist_exome --notemp
+
+snakemake --profil twist_exome --notemp --snakefile twist_exome_hg37/workflow/Snakefile  --configfile twist_exome_hg37/config/config.yaml
 
 
 hydra-genetics create-input-files -d /beegfs-storage/owncloud-sftp-share/GMS_Solid_DNA_Validation_Data/

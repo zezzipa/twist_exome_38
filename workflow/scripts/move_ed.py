@@ -22,8 +22,11 @@ for line in open("samples_sv.tsv","r"):
 	name = file.split("_")[0]
 	if sample == name:
 		if "F" in line:
-			shutil.copy("parabricks/pbrun_fq2bam/"+sample+"_N.bam","/beegfs-scratch/wp3/ExomeDepth/F/"+sample+"_N.bam")
-			shutil.copy("parabricks/pbrun_fq2bam/"+sample+"_N.bam.bai","/beegfs-scratch/wp3/ExomeDepth/F/"+sample+"_N.bam.bai")
+			shutil.copy("parabricks/pbrun_fq2bam/"+sample+"_N.bam","cnv_sv/exomedepth_F/"+sample+"_N.bam")
+			shutil.copy("parabricks/pbrun_fq2bam/"+sample+"_N.bam.bai","cnv_sv/exomedepth_F/"+sample+"_N.bam.bai")
 		if "M" in line:
-			shutil.copy("parabricks/pbrun_fq2bam/"+sample+"_N.bam","/beegfs-scratch/wp3/ExomeDepth/M/"+sample+"_N.bam")
-			shutil.copy("parabricks/pbrun_fq2bam/"+sample+"_N.bam.bai","/beegfs-scratch/wp3/ExomeDepth/M/"+sample+"_N.bam.bai")
+			shutil.copy("parabricks/pbrun_fq2bam/"+sample+"_N.bam","cnv_sv/exomedepth_M/"+sample+"_N.bam")
+			shutil.copy("parabricks/pbrun_fq2bam/"+sample+"_N.bam.bai","cnv_sv/exomedepth_M/"+sample+"_N.bam.bai")
+
+df.to_csv("cnv_sv/exomedepth_M/Done.txt", sep='\t', index=False)
+df.to_csv("cnv_sv/exomedepth_F/Done.txt", sep='\t', index=False)

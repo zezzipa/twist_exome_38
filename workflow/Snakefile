@@ -40,28 +40,23 @@ module cnv_sv:
     config:
         config
 
-
 use rule exomedepth from cnv_sv as cnv_exomedepth with:
     input:
-        bam="parabricks/pbrun_fq2bam/{sample}_{type}.bam",
+        bam="cnv_sv/exomedepth_F/"+sample+"_N.bam",
         bedfile=config.get("exomedepth", {}).get("bedfile", ""),
-        ref_count=config.get("exomedepth", {}).get("ref_count", ""),
-
-# use rule exomedepth from cnv_sv as cnv_exomedepth with:
-#     input:
-#         bam="/beegfs-scratch/wp3/ExomeDepth/{sex}/{sample}_{type}.bam",
-#         bedfile=config.get("exomedepth", {}).get("bedfile", ""),
-#         ref_count=config.get("exomedepth", {}).get("ref_count_dir", "")+"/{sex}_RefCount.mat",
-#     output:
-#         result=temp("cnv_sv/exomedepth_{sex}/{sample}_{type}.txt"),
-#         aggregated_result=temp("cnv_sv/exomedepth_{sex}/{sample}_{type}.SV.txt"),
-#         aed=temp("cnv_sv/exomedepth_{sex}/{sample}_{type}.aed"),
-#     log:
-#         "cnv_sv/exomedepth_{sex}/{sample}_{type}.output.log",
-#     benchmark:
-#         repeat("cnv_sv/exomedepth_{sex}/{sample}_{type}.output.benchmark.tsv", config.get("exomedepth", {}).get("benchmark_repeats", 1))
-#     message:
-#         "{rule}: run exomedepth cnv_sv/{rule}_{wildcards.sex}/{wildcards.sample}_{wildcards.type}.input"
+        F="cnv_sv/exomedepth_F/Done.txt",
+        M="cnv_sv/exomedepth_M/Done.txt",
+        ref_count=config.get("exomedepth", {}).get("ref_count", "")+"/{sex}_RefCount.mat",
+    output:
+        result=temp("cnv_sv/exomedepth_{sex}/{sample}_{type}.txt"),
+        aggregated_result=temp("cnv_sv/exomedepth_{sex}/{sample}_{type}.SV.txt"),
+        aed=temp("cnv_sv/exomedepth_{sex}/{sample}_{type}.aed"),
+    log:
+        "cnv_sv/exomedepth_{sex}/{sample}_{type}.output.log",
+    benchmark:
+        repeat("cnv_sv/exomedepth_{sex}/{sample}_{type}.output.benchmark.tsv", config.get("exomedepth", {}).get("benchmark_repeats", 1))
+    message:
+        "{rule}: run exomedepth cnv_sv/{rule}_{wildcards.sex}/{wildcards.sample}_{wildcards.type}.input"
 
 module prealignment:
     snakefile:
