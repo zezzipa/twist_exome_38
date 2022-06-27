@@ -56,14 +56,6 @@ use rule exomedepth from cnv_sv as cnv_exomedepth with:
     message:
         "{rule}: run exomedepth cnv_sv/{rule}_{wildcards.sex}/{wildcards.sample}_{wildcards.type}.input"
 
-module prealignment:
-    snakefile:
-        github("hydra-genetics/prealignment", path="workflow/Snakefile", tag=config["modules"]["prealignment"],)
-    config:
-        config
-
-use rule * from prealignment as prealign_*
-
 
 module parabricks:
     snakefile:
@@ -74,6 +66,15 @@ module parabricks:
 use rule pbrun_fq2bam from parabricks as parabricks_fq2bam
 
 use rule pbrun_deepvariant from parabricks as parabricks_deepvariant
+
+
+module prealignment:
+    snakefile:
+        github("hydra-genetics/prealignment", path="workflow/Snakefile", tag=config["modules"]["prealignment"],)
+    config:
+        config
+
+use rule * from prealignment as prealignment_*
 
 
 include: "rules/add_ref_to_vcf.smk"
