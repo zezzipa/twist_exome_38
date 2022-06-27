@@ -74,7 +74,7 @@ module prealignment:
     config:
         config
 
-use rule * from prealignment as prealignment_*
+use rule * from prealignment as prealign_*
 
 
 include: "rules/add_ref_to_vcf.smk"
