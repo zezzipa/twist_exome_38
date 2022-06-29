@@ -34,6 +34,7 @@ use rule samtools_view from compression as compression_samtools_view with:
 
 use rule spring from compression as compression_spring
 
+
 module cnv_sv:
     snakefile:
         github("hydra-genetics/cnv_sv", path="workflow/Snakefile", tag=config["modules"]["cnv_sv"],)
@@ -46,15 +47,32 @@ use rule exomedepth from cnv_sv as cnv_exomedepth with:
         bedfile=config.get("exomedepth", {}).get("bedfile", ""),
         ref_count=config.get("exomedepth", {}).get("ref_count", "")+"/{sex}_RefCount.mat",
     output:
-        result=temp("cnv_sv/exomedepth_{sex}/{sample}_{type}.txt"),
         aggregated_result=temp("cnv_sv/exomedepth_{sex}/{sample}_{type}.SV.txt"),
         aed=temp("cnv_sv/exomedepth_{sex}/{sample}_{type}.aed"),
+        exon=temp("cnv_sv/exomedepth_{sex}/{sample}_{type}.RData"),
+        result=temp("cnv_sv/exomedepth_{sex}/{sample}_{type}.txt"),
     log:
         "cnv_sv/exomedepth_{sex}/{sample}_{type}.output.log",
     benchmark:
         repeat("cnv_sv/exomedepth_{sex}/{sample}_{type}.output.benchmark.tsv", config.get("exomedepth", {}).get("benchmark_repeats", 1))
     message:
         "{rule}: run exomedepth cnv_sv/{rule}_{wildcards.sex}/{wildcards.sample}_{wildcards.type}.input"
+
+use rule ed_filter from cnv_sv as cnv_ed_filter with:
+    input:
+        exon="cnv_sv/exomedepth_{sex}/{sample}_{type}.RData",
+        ED_common=config.get("exomedepth", {}).get("ED_common", ""),
+        WW25=config.get("exomedepth", {}).get("WW25", ""),
+        conifer=config.get("exomedepth", {}).get("conifer", ""),
+    output:
+        aggregated_result=temp("cnv_sv/exomedepth_{sex}/{sample}_{type}.SV.filter.txt"),
+        aed=temp("cnv_sv/exomedepth_{sex}/{sample}_{type}.filter.aed"),
+    log:
+        "cnv_sv/exomedepth_{sex}/{sample}_{type}.filter.output.log",
+    benchmark:
+        repeat("cnv_sv/exomedepth_{sex}/{sample}_{type}.filter.output.benchmark.tsv", config.get("exomedepth", {}).get("benchmark_repeats", 1))
+    message:
+        "{rule}: filter exomedepth cnv_sv/{rule}_{wildcards.sex}/{wildcards.sample}_{wildcards.type}.RData"
 
 
 module parabricks:

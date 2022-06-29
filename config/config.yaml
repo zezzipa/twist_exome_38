@@ -7,14 +7,14 @@ units: "units.tsv"
 default_container: "docker://hydragenetics/common:0.1.3"
 
 programdir:
-  dir: "/projects/wp3/nobackup/TWIST/INBOX/TE105_220513/220513_NB501298_0363_AHLYCJBGXL/twist_exome_hg37/workflow"
+  dir: "/projects/wp3/nobackup/TWIST/INBOX/TE106_220517/220517_NB501298_0364_AHLVK7BGXL/twist_exome_hg37/workflow"
 #  dir: "/projects/wp3/nobackup/Workspace/Jessika_playground/twist_exome_38-main/workflow"
 
 modules:
   compression: "v1.1.0"
   cnv_sv: "exomedepth"
   parabricks: "v0.2.0"
-  prealignment: "v0.3.1"
+  prealignment: "v0.4.0"
   qc: "zezzipa-patch-1"
   misc: "v0.1.0"
 
@@ -45,9 +45,12 @@ crumble:
   extra: "-O CRAM"
 
 exomedepth:
-  container: "/beegfs-storage/projects/wp3/nobackup/Workspace/ExomeDepth/ExomeDepth.1.1.10.simg"
   bedfile: "/beegfs-storage/projects/wp3/nobackup/Workspace/ExomeDepth/files/twist.hg19_chr.txt"
+  conifer: "/beegfs-storage/projects/wp3/nobackup/Workspace/ExomeDepth/files/40_45_50_svd6.txt"
+  container: "/beegfs-storage/projects/wp3/nobackup/Workspace/ExomeDepth/ExomeDepth.1.1.10.simg"
+  ED_common: "/beegfs-storage/projects/wp3/nobackup/Workspace/ExomeDepth/files/ExomeDepthCommon_v2.txt"
   ref_count: "/beegfs-storage/projects/wp3/nobackup/Workspace/ExomeDepth/files"
+  WW25: "/beegfs-storage/projects/wp3/nobackup/Workspace/ExomeDepth/files/WW25.txt"
 
 fastp_pe:
   container: "docker://hydragenetics/fastp:0.20.1"
@@ -63,7 +66,7 @@ multiqc:
   container: "docker://hydragenetics/multiqc:1.11"
   reports:
     DNA:
-      config: "multiqc.config"
+      config: "twist_exome_hg37/config/multiqc.config"
       included_unit_types: ['N']
       qc_files:
         - "qc/fastqc/{sample}_{type}_{flowcell}_{lane}_{barcode}_{read}_fastqc.zip"

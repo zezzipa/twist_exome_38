@@ -61,11 +61,11 @@ def compile_output_list(wildcards):
     output_list.append("conifer/calls/calls_F_svd6.txt")
     output_list.append("conifer/calls/calls_M_svd6.txt")
     output_list.append([
-        "cnv_sv/exomedepth_F/%s_N.SV.txt" % sample
+        "cnv_sv/exomedepth_F/%s_N.SV.filter.txt" % sample
         for sample in get_samples(samples)
     ])
     output_list.append([
-        "cnv_sv/exomedepth_M/%s_N.SV.txt" % sample
+        "cnv_sv/exomedepth_M/%s_N.SV.filter.txt" % sample
         for sample in get_samples(samples)
     ])
     output_list.append([
