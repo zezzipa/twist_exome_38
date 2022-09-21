@@ -11,6 +11,7 @@ pip install --upgrade hydra_genetics
 pip install --upgrade snakemake
 module load singularity
 module load slurm-drmaa
+module load R
 pip install drmaa
 
 #
@@ -50,6 +51,16 @@ snakemake --cores 2 -s /projects/wp3/nobackup/Workspace/WGS_pipeline_GPU_test/Po
 snakemake -n -s /projects/wp3/nobackup/Workspace/WGS_pipeline_GPU_test/Poirot_RD-WGS/workflow/Snakefile --use-singularity --singularity-args " -B /projects -B /beegfs-storage -B /scratch -B /data "
 
 snakemake -n --configfile Poirot_RD-WGS-develop/config/config.yaml -s Poirot_RD-WGS-develop/workflow/Snakefile --use-singularity --singularity-args " -B /projects -B /beegfs-storage -B /scratch -B /data " --notemp
+
+
+
+shell: """awk "{{OFS="\\t"}};{{print \$2}}" {input}"""
+Thus, the following rules apply:
+
+Do not use single quotes within the command, as they are replaced otherwise, which causes errors.
+Escape certain characters, such as \t by \\t, $ by \$, and { by {{.
+Use triple quotation marks to surround the command line call.
+I hope this helps, I will update this post once there are implementation updates.
 
 
 

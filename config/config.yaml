@@ -7,7 +7,7 @@ units: "units.tsv"
 default_container: "docker://hydragenetics/common:0.1.3"
 
 programdir:
-  dir: "/projects/wp3/nobackup/TWIST/INBOX/TE106_220517/220517_NB501298_0364_AHLVK7BGXL/twist_exome_hg37/workflow"
+  dir: "/projects/wp3/nobackup/Workspace/Jessika_playground/fastq_med_cnv/twist_exome_hg37/workflow"
 #  dir: "/projects/wp3/nobackup/Workspace/Jessika_playground/twist_exome_38-main/workflow"
 
 modules:
@@ -15,7 +15,7 @@ modules:
   cnv_sv: "zezzipa-patch-1"
   parabricks: "v0.2.0"
   prealignment: "v0.4.0"
-  qc: "zezzipa-patch-1"
+  qc: "develop"
   misc: "v0.1.0"
 
 #qc: "364b286e21efc462624ab0917a1d29bc55ed541d"

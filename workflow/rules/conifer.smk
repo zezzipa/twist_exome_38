@@ -187,3 +187,62 @@ rule conifer_call:
         "python {params.dir}/conifer.py call --threshold 1.75 "
         "--input {input} "
         "--output {output} &> {log}"
+
+
+rule conifer_individual:
+    input:
+        F="conifer/calls/calls_F_svd6.txt",
+        M="conifer/calls/calls_M_svd6.txt",
+    output:
+        "conifer/samples/{sample}.txt",
+    log:
+        "conifer/samples/{sample}.log",
+    benchmark:
+        repeat(
+            "conifer/samples/{sample}.benchmark.tsv",
+            config.get("conifer", {}).get("benchmark_repeats", 1),
+        )
+    threads: config.get("conifer", {}).get("threads", config["default_resources"]["threads"]),
+    params:
+        dir="/beegfs-storage/projects/wp3/nobackup/Workspace/CoNIFER",
+    resources:
+        mem_mb=config.get("conifer", {}).get("mem_mb", config["default_resources"]["mem_mb"]),
+        mem_per_cpu=config.get("conifer", {}).get("mem_per_cpu", config["default_resources"]["mem_per_cpu"]),
+        partition=config.get("conifer", {}).get("partition", config["default_resources"]["partition"]),
+        threads=config.get("conifer", {}).get("threads", config["default_resources"]["threads"]),
+        time=config.get("conifer", {}).get("time", config["default_resources"]["time"]),
+    container:
+        config.get("conifer", {}).get("container", config["default_container"]),
+    message:
+        "{rule}: Get calls for each sample",
+    shell:
+        """awk "BEGIN{{ print "sample\\tchr\\tstart\\tstop\\tcnv"}}" > {output} | grep {wildcards.sample} {input} >> {output}"""
+
+
+rule conifer_aed:
+    input:
+        txtfile="conifer/samples/{sample}.txt",
+    output:
+        aedfile="conifer/samples/{sample}.aed",
+    log:
+        log="conifer/samples/{sample}_aed.log",
+    benchmark:
+        repeat(
+            "conifer/samples/{sample}_aed.benchmark.tsv",
+            config.get("conifer", {}).get("benchmark_repeats", 1),
+        )
+    threads: config.get("conifer", {}).get("threads", config["default_resources"]["threads"]),
+    params:
+        config["programdir"]["dir"],
+    resources:
+        mem_mb=config.get("conifer", {}).get("mem_mb", config["default_resources"]["mem_mb"]),
+        mem_per_cpu=config.get("conifer", {}).get("mem_per_cpu", config["default_resources"]["mem_per_cpu"]),
+        partition=config.get("conifer", {}).get("partition", config["default_resources"]["partition"]),
+        threads=config.get("conifer", {}).get("threads", config["default_resources"]["threads"]),
+        time=config.get("conifer", {}).get("time", config["default_resources"]["time"]),
+    container:
+        config.get("exomedepth", {}).get("container", config["default_container"])
+    message:
+        "{rule}: Get calls for each sample",
+    script:
+        "/projects/wp3/nobackup/Workspace/Jessika_playground/fastq_med_cnv/twist_exome_hg37/workflow/scripts/conifer_aed.R"
