@@ -148,6 +148,7 @@ rule conifer_analyze:
         "--write_sd {output.sdtxt} "
         "--output {output.hdf5} &> {log}"
 
+
 # Can add
 # png=temp("conifer/SVD-ZRPKM/screenplot.png"),  in output and
 # "--plot_scree {output.png} "  in shell
@@ -216,7 +217,7 @@ rule conifer_individual:
     message:
         "{rule}: Get calls for each sample",
     shell:
-        """awk "BEGIN{{ print "sample\\tchr\\tstart\\tstop\\tcnv"}}" > {output} | grep {wildcards.sample} {input} >> {output}"""
+        "grep {wildcards.sample} {input} > {output} || true"
 
 
 rule conifer_aed:
